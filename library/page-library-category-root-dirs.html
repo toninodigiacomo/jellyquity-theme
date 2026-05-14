@@ -169,24 +169,52 @@
   }
 
   // Charge la couverture de chaque dossier
+  // 1. Essaie folder.jpg dans le dossier
+  // 2. Si absent, fetch la page du dossier et prend la première couverture
   document.querySelectorAll('.folder-card[data-folder-url]').forEach(function (card) {
     var url      = card.dataset.folderUrl;
     var img      = card.querySelector('.folder-cover');
     var fallback = card.querySelector('.folder-fallback');
     if (!url || !img) return;
 
-    fetch(url)
-      .then(function (r) { return r.text(); })
-      .then(function (html) {
-        var doc  = new DOMParser().parseFromString(html, 'text/html');
-        var imgs = doc.querySelectorAll('.book img, #booksContainer img');
-        if (!imgs.length) imgs = doc.querySelectorAll('img[src*="cover"], img[src*="thumbnail"]');
-        if (!imgs.length) return;
-        img.src = imgs[0].src;
+    // URL du dossier : /comics/7590 → folderId=7590
+    // Ubooquity sert les thumbnails via /cover/<id>
+    var urlParts = url.replace(/\/$/, '').split('/');
+    var folderId = urlParts[urlParts.length - 1];
+    var candidates = [
+      '/cover/' + folderId,
+    ];
+    var folderJpg = candidates[0];
+
+    var tryFolderJpg = new Promise(function (resolve, reject) {
+      var testImg = new Image();
+      testImg.onload  = function () { resolve(folderJpg); };
+      testImg.onerror = reject;
+      testImg.src = folderJpg;
+    });
+
+    tryFolderJpg
+      .then(function (src) {
+        // folder.jpg trouvé
+        img.src = src;
         img.style.display = 'block';
         if (fallback) fallback.style.display = 'none';
       })
-      .catch(function () {});
+      .catch(function () {
+        // Pas de folder.jpg — fetch la page du dossier
+        fetch(url)
+          .then(function (r) { return r.text(); })
+          .then(function (html) {
+            var doc  = new DOMParser().parseFromString(html, 'text/html');
+            var imgs = doc.querySelectorAll('.book img, #booksContainer img');
+            if (!imgs.length) imgs = doc.querySelectorAll('img[src*="cover"], img[src*="thumbnail"]');
+            if (!imgs.length) return;
+            img.src = imgs[0].src;
+            img.style.display = 'block';
+            if (fallback) fallback.style.display = 'none';
+          })
+          .catch(function () {});
+      });
   });
 })();
 </script>

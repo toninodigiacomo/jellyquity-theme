@@ -80,3 +80,6 @@ Toutes les couleurs sont des variables CSS dans `common/style.css` :
 - Les cards utilisent `aspect-ratio: 2/3` pour les couvertures — idéal pour BD et romans.
 - La barre de progression de lecture s'affiche automatiquement si Ubooquity fournit
   la variable `{{readingProgress}}`.
+
+
+> **Important** : Il faut que dans les parèmètres d'administration d'ubooquity que **Enable folder metadata display** soit activé !
