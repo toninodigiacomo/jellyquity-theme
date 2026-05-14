@@ -1,0 +1,189 @@
+{{>common/inc-header.html}}
+
+<main id="content">
+
+  {{>library/inc-library-topbar.html}}
+
+  {{#pageLabel}}
+  <h1 id="pageTitle">{{pageLabel}}</h1>
+  {{/pageLabel}}
+  {{^pageLabel}}
+  <h1 id="pageTitle">{{category}}</h1>
+  {{/pageLabel}}
+
+  <div id="booksContainer">
+    {{#items}}
+    <div class="book {{readingStatusClass}}"
+         style="cursor:pointer;"
+         data-id="{{itemId}}"
+         data-title="{{itemTitle}}"
+         data-cover="{{itemCoverUrl}}"
+         data-series="{{seriesName}}"
+         data-series-index="{{seriesIndex}}"
+         data-writers="{{writers}}"
+         data-date="{{publicationDate}}"
+         data-language="{{language}}"
+         data-ext="{{fileExtension}}"
+         data-size="{{fileSize}}"
+         data-rating="{{rating}}"
+         data-tags="{{tags}}"
+         data-reader="{{readerUrl}}"
+         data-download="{{downloadUrl}}"
+         data-progress="{{progress}}"
+         data-folder="{{isFolder}}"
+         data-folder-url="{{itemFolderUrl}}"
+         onclick="handleCardClick(this)">
+
+      <div style="position:relative;">
+        <img
+          src="{{itemCoverUrl}}"
+          alt="{{itemTitle}}"
+          loading="lazy"
+          onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"
+        />
+        <div style="display:none;width:100%;aspect-ratio:2/3;background:#1c1c1c;align-items:center;justify-content:center;flex-direction:column;gap:8px;color:#555;font-size:12px;font-weight:700;text-align:center;padding:16px;">
+          <span style="font-size:32px;">{{#isFolder}}📁{{/isFolder}}{{^isFolder}}📚{{/isFolder}}</span>
+          <span>{{itemTitle}}</span>
+        </div>
+
+        {{#progress}}
+        <div style="position:absolute;bottom:0;left:0;right:0;height:3px;background:rgba(0,0,0,0.5);">
+          <div style="width:{{progress}}%;height:100%;background:#00a4dc;"></div>
+        </div>
+        {{/progress}}
+
+        {{#isFolder}}
+        {{#itemChildrenCount}}
+        <div style="position:absolute;bottom:6px;right:6px;background:rgba(0,0,0,0.7);color:#aaa;font-size:10px;font-weight:700;padding:2px 6px;border-radius:10px;">
+          {{itemChildrenCount}}
+        </div>
+        {{/itemChildrenCount}}
+        {{/isFolder}}
+      </div>
+
+      <div class="title" title="{{itemTitle}}">{{itemTitle}}</div>
+    </div>
+    {{/items}}
+  </div>
+
+  {{^items}}
+  <div style="text-align:center;padding:80px 20px;color:#555;">
+    <div style="font-size:48px;margin-bottom:16px;">📭</div>
+    <p style="font-size:18px;font-weight:700;color:#666;">Aucun élément trouvé</p>
+  </div>
+  {{/items}}
+
+  <div id="pagination" style="display:flex;align-items:center;gap:6px;justify-content:center;margin-top:40px;padding:20px 0;">
+    <a href="{{prev10pageUrl}}" class="{{prev10pageClass}}" style="padding:6px 12px;background:#1c1c1c;border:1px solid rgba(255,255,255,0.07);border-radius:6px;color:#aaa;font-weight:700;font-size:13px;">«</a>
+    <a href="{{prevPageUrl}}" class="{{prevPageClass}}" style="padding:6px 12px;background:#1c1c1c;border:1px solid rgba(255,255,255,0.07);border-radius:6px;color:#aaa;font-weight:700;font-size:13px;">‹</a>
+    <span style="padding:6px 14px;background:#00a4dc;border-radius:6px;color:#fff;font-weight:700;font-size:13px;">{{pageNumber}} / {{totalPages}}</span>
+    <a href="{{nextPageUrl}}" class="{{nextPageClass}}" style="padding:6px 12px;background:#1c1c1c;border:1px solid rgba(255,255,255,0.07);border-radius:6px;color:#aaa;font-weight:700;font-size:13px;">›</a>
+    <a href="{{next10pageUrl}}" class="{{next10pageClass}}" style="padding:6px 12px;background:#1c1c1c;border:1px solid rgba(255,255,255,0.07);border-radius:6px;color:#aaa;font-weight:700;font-size:13px;">»</a>
+  </div>
+
+</main>
+
+{{>library/inc-library-popups.html}}
+{{>library/page-library-details.html}}
+
+<script>
+function handleCardClick(card) {
+  if (card.dataset.folder === 'true') {
+    window.location = card.dataset.folderUrl;
+    return;
+  }
+  openDetails(card.dataset);
+}
+
+function openDetails(d) {
+  // Cover
+  var cover = document.getElementById('detailsCover');
+  var fallback = document.getElementById('detailsCoverFallback');
+  cover.src = d.cover || '';
+  cover.style.display = 'block';
+  if (fallback) fallback.style.display = 'none';
+
+  // Title
+  document.getElementById('detailsTitle').textContent = d.title || '';
+
+  // Series
+  var seriesEl = document.getElementById('detailsSeries');
+  if (d.series) {
+    seriesEl.textContent = d.series + (d.seriesIndex ? ' #' + d.seriesIndex : '');
+    seriesEl.style.display = 'block';
+  } else {
+    seriesEl.style.display = 'none';
+  }
+
+  // Meta badges
+  var metaEl = document.getElementById('detailsMeta');
+  metaEl.innerHTML = '';
+  var metas = [
+    d.writers   ? { icon: '✍', val: d.writers }   : null,
+    d.date      ? { icon: '📅', val: d.date }      : null,
+    d.language  ? { icon: '🌐', val: d.language }  : null,
+    d.ext       ? { icon: '',   val: d.ext }        : null,
+    d.size      ? { icon: '',   val: d.size }       : null,
+    d.rating    ? { icon: '',   val: d.rating }     : null,
+  ];
+  metas.forEach(function(m) {
+    if (!m) return;
+    var span = document.createElement('span');
+    span.style.cssText = 'background:rgba(0,164,220,0.12);border:1px solid rgba(0,164,220,0.25);border-radius:20px;color:#00a4dc;font-size:12px;font-weight:700;padding:3px 10px;';
+    span.textContent = (m.icon ? m.icon + ' ' : '') + m.val;
+    metaEl.appendChild(span);
+  });
+
+  // Tags
+  var tagsEl = document.getElementById('detailsTags');
+  if (d.tags) {
+    tagsEl.textContent = '🏷 ' + d.tags;
+    tagsEl.style.display = 'block';
+  } else {
+    tagsEl.style.display = 'none';
+  }
+
+  // Buttons
+  var actionsEl = document.getElementById('detailsActions');
+  actionsEl.innerHTML = '';
+  if (d.reader) {
+    var btnRead = document.createElement('a');
+    btnRead.href = d.reader;
+    btnRead.textContent = '▶ Lire';
+    btnRead.style.cssText = 'display:inline-flex;align-items:center;padding:10px 22px;border-radius:6px;background:#00a4dc;color:#fff;font-family:Nunito,sans-serif;font-size:15px;font-weight:700;text-decoration:none;transition:all 0.2s;';
+    actionsEl.appendChild(btnRead);
+  }
+  if (d.download) {
+    var btnDl = document.createElement('a');
+    btnDl.href = d.download;
+    btnDl.textContent = '↓ Télécharger';
+    btnDl.style.cssText = 'display:inline-flex;align-items:center;padding:10px 22px;border-radius:6px;background:transparent;color:#aaa;font-family:Nunito,sans-serif;font-size:15px;font-weight:700;text-decoration:none;border:1px solid rgba(255,255,255,0.12);transition:all 0.2s;';
+    actionsEl.appendChild(btnDl);
+  }
+
+  // Progress
+  var progressSection = document.getElementById('detailsProgressSection');
+  if (d.progress && d.progress !== '0') {
+    document.getElementById('detailsProgressValue').textContent = d.progress + '%';
+    document.getElementById('detailsProgressBar').style.width = d.progress + '%';
+    progressSection.style.display = 'block';
+  } else {
+    progressSection.style.display = 'none';
+  }
+
+  // Description (non disponible dans la liste, sera vide)
+  var descEl = document.getElementById('detailsDesc');
+  descEl.style.display = 'none';
+
+  // Show overlay
+  var overlay = document.getElementById('detailsOverlay');
+  overlay.style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+}
+</script>
+
+<footer id="footer">
+  <p>Propulsé par <a href="https://vaemendis.net/ubooquity/">Ubooquity</a> · Thème Jellyfin</p>
+</footer>
+</body>
+</html>

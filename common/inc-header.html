@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Ubooquity</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;600;700;900&display=swap"/>
+  <link rel="stylesheet" type="text/css" href="{{rootPath}}/theme/common/style.css"/>
+  <script src="{{rootPath}}/theme/common/themeScript.js"></script>
+</head>
+<body>
+  <header id="topbar">
+
+    <!-- Logo + titre -->
+    <div style="display:flex;align-items:center;gap:10px;flex:1;">
+      <a href="{{rootPath}}/" style="display:flex;align-items:center;gap:10px;text-decoration:none;">
+        <img src="{{rootPath}}/theme/common/logo.png" alt="Ubooquity"
+             style="width:36px;height:36px;object-fit:contain;flex-shrink:0;"/>
+        <span id="siteTitle">Ubooquity</span>
+      </a>
+    </div>
+
+    <!-- Bouton Accueil — id présent pour le JS -->
+    <nav id="nav-home" style="display:flex;align-items:right;justify-content:right;flex:1;">
+      <a href="{{rootPath}}/" title="Accueil"
+         id="btn-home"
+         style="display:inline-flex;align-items:right;padding:7px;border-radius:8px;transition:opacity 0.2s;opacity:0.55;"
+         onmouseover="this.style.opacity='1';"
+         onmouseout="this.style.opacity='0.55';">
+        <img src="{{rootPath}}/theme/common/icon-home.svg" alt="Accueil"
+             style="width:24px;height:24px;display:block;"/>
+      </a>
+    </nav>
+
+    <!-- Barre de recherche + user -->
+    <div style="display:flex;align-items:center;gap:12px;">
+      <!--
+      <form id="topbar-search-form" method="get" action="" style="margin:0;">
+        <input
+          type="search"
+          id="topbar-search-input"
+          name="search"
+          placeholder="Rechercher…"
+          autocomplete="off"
+          style="width:200px;"
+        />
+      </form>
+      -->
+      
+      {{#userName}}
+      <div style="display:flex;align-items:center;gap:10px;margin-left:4px;flex-shrink:0;">
+        <!-- Avatar initiale -->
+        <div id="user-avatar" style="width:32px;height:32px;background:#4ca2d8;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Noto Sans',sans-serif;font-weight:700;font-size:13px;color:#fff;flex-shrink:0;text-transform:uppercase;">
+          {{userName}}
+        </div>
+        <!-- Nom complet -->
+        <span style="font-family:'Noto Sans',sans-serif;font-size:14px;font-weight:600;color:#ffffff;white-space:nowrap;">
+          {{userName}}
+        </span>
+        <!-- Séparateur -->
+        <span style="color:#333;">|</span>
+        <!-- Lien déconnexion -->
+        <a href="{{rootPath}}/?logout=true"
+           style="font-family:'Noto Sans',sans-serif;font-size:13px;font-weight:400;color:#aaaaaa;text-decoration:none;white-space:nowrap;transition:color 0.2s;"
+           onmouseover="this.style.color='#ffffff';"
+           onmouseout="this.style.color='#aaaaaa';">
+          Déconnexion
+        </a>
+      </div>
+      {{/userName}}
+    </div>
+
+  </header>
+
+  <script>
+  (function () {
+    var rootPath = '{{rootPath}}';
+    var path = window.location.pathname;
+
+    // ── Avatar : affiche seulement l'initiale ──────────────────
+    var avatar = document.getElementById('user-avatar');
+    if (avatar) {
+      var initial = avatar.textContent.trim().charAt(0).toUpperCase();
+      avatar.textContent = initial;
+    }
+
+    // ── Bouton Accueil ──────────────────────────────────────────
+    // On compare le chemin courant à la racine (avec et sans slash final,
+    // avec et sans rootPath). Si on est sur la home, on masque le bouton.
+    var cleanPath = path.replace(/\/$/, '') || '/';
+    var cleanRoot = (rootPath || '').replace(/\/$/, '');
+    var isHome = (cleanPath === cleanRoot || cleanPath === '' || cleanPath === '/');
+
+    var nav = document.getElementById('nav-home');
+    if (nav) {
+      nav.style.visibility = isHome ? 'hidden' : 'visible';
+    }
+
+    // ── Barre de recherche ──────────────────────────────────────
+    // Ubooquity n'a pas d'endpoint de recherche global dans l'URL.
+    // On délègue au formulaire natif qu'Ubooquity injecte via
+    // inc-library-topbar-search.html (présent uniquement sur les pages library).
+    // Sur les autres pages (home, login…), le champ est masqué.
+    var searchForm  = document.getElementById('topbar-search-form');
+    var searchInput = document.getElementById('topbar-search-input');
+
+    // On attend que la page soit complètement chargée pour chercher
+    // le formulaire natif (injecté par le partial Ubooquity)
+    window.addEventListener('load', function () {
+      // Le formulaire natif de recherche injecté par Ubooquity
+      // contient un input[name="search"] différent du nôtre
+      var nativeForms = document.querySelectorAll('form[action]');
+      var nativeSearchForm = null;
+      for (var i = 0; i < nativeForms.length; i++) {
+        var f = nativeForms[i];
+        if (f.id !== 'topbar-search-form' && f.querySelector('input[name="search"]')) {
+          nativeSearchForm = f;
+          break;
+        }
+      }
+
+      if (!nativeSearchForm || isHome) {
+        // Pas de formulaire natif trouvé (home, login…) : on masque
+        if (searchForm) searchForm.style.display = 'none';
+      } else {
+        // Formulaire natif trouvé : on lui délègue le submit
+        var nativeInput = nativeSearchForm.querySelector('input[name="search"]');
+        if (searchForm && searchInput) {
+          searchForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+            var val = searchInput.value.trim();
+            if (!val) return;
+            if (nativeInput) nativeInput.value = val;
+            nativeSearchForm.submit();
+          });
+        }
+      }
+    });
+  })();
+  </script>

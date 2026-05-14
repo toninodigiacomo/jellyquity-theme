@@ -1,0 +1,93 @@
+<!-- ============================================================
+     Details panel — partial inclus dans page-library.html
+     Variables dispo : itemCoverUrl, itemTitle, seriesName,
+     seriesIndex, writers, publicationDate, language, fileExtension,
+     fileSize, rating, tags, description, readerUrl, downloadUrl,
+     progress, readingStatusClass, rootPath
+     ============================================================ -->
+<div id="detailsOverlay"
+     style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:2000;align-items:center;justify-content:center;backdrop-filter:blur(4px);"
+     onclick="if(event.target===this)closeDetails();">
+
+  <div id="detailsPanel"
+       style="background:#1c1c1c;border:1px solid rgba(255,255,255,0.08);border-radius:14px;box-shadow:0 24px 64px rgba(0,0,0,0.7);width:min(860px,95vw);max-height:90vh;overflow-y:auto;position:relative;">
+
+    <!-- Close button -->
+    <button onclick="closeDetails()"
+            style="position:absolute;top:14px;right:14px;background:#252525;border:1px solid rgba(255,255,255,0.1);border-radius:50%;width:34px;height:34px;color:#aaa;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;padding:0;z-index:10;transition:all 0.2s;"
+            onmouseover="this.style.background='#00a4dc';this.style.color='#fff';"
+            onmouseout="this.style.background='#252525';this.style.color='#aaa';">
+      ×
+    </button>
+
+    <div style="display:flex;gap:32px;padding:32px;align-items:flex-start;">
+
+      <!-- Cover -->
+      <div style="flex-shrink:0;width:180px;">
+        <img id="detailsCover" src="" alt=""
+             style="width:100%;border-radius:8px;box-shadow:0 12px 32px rgba(0,0,0,0.6);display:block;"
+             onerror="this.style.display='none';document.getElementById('detailsCoverFallback').style.display='flex';" />
+        <div id="detailsCoverFallback"
+             style="display:none;width:100%;aspect-ratio:2/3;background:#252525;align-items:center;justify-content:center;border-radius:8px;font-size:48px;">📚</div>
+
+        <!-- Progress bar -->
+        <div id="detailsProgressSection" style="margin-top:12px;display:none;">
+          <div style="display:flex;justify-content:space-between;font-size:11px;color:#666;font-weight:700;margin-bottom:4px;">
+            <span>Progression</span>
+            <span id="detailsProgressValue" style="color:#00a4dc;"></span>
+          </div>
+          <div style="height:4px;background:#2e2e2e;border-radius:2px;overflow:hidden;">
+            <div id="detailsProgressBar" style="height:100%;background:#00a4dc;border-radius:2px;transition:width 0.3s;width:0%;"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Info -->
+      <div style="flex:1;min-width:0;">
+
+        <h2 id="detailsTitle"
+            style="font-size:22px;font-weight:800;letter-spacing:-0.02em;color:#fff;margin-bottom:8px;line-height:1.25;padding-right:40px;">
+        </h2>
+
+        <div id="detailsSeries" style="font-size:13px;color:#00a4dc;font-weight:700;margin-bottom:14px;display:none;"></div>
+
+        <!-- Meta badges -->
+        <div id="detailsMeta" style="display:flex;gap:7px;flex-wrap:wrap;margin-bottom:16px;"></div>
+
+        <!-- Tags -->
+        <div id="detailsTags" style="font-size:12px;color:#555;margin-bottom:18px;display:none;"></div>
+
+        <!-- Action buttons -->
+        <div id="detailsActions" style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px;"></div>
+
+        <!-- Description -->
+        <div id="detailsDesc"
+             style="color:#bbb;font-size:13px;line-height:1.7;border-top:1px solid rgba(255,255,255,0.07);padding-top:16px;display:none;">
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// Données des items injectées par Ubooquity via le template
+// On stocke les infos dans des data-attributes sur chaque card
+(function() {
+  // Patch : après le rendu Mustache, les cards ont déjà leurs données en attributs
+  // showDetails() est appelé au clic sur une card dans page-library.html
+
+  window.closeDetails = function() {
+    var overlay = document.getElementById('detailsOverlay');
+    if (overlay) {
+      overlay.style.display = 'none';
+      document.body.style.overflow = '';
+    }
+  };
+
+  // Fermeture avec Escape
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') closeDetails();
+  });
+})();
+</script>

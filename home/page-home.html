@@ -1,0 +1,278 @@
+{{>common/inc-header.html}}
+
+<style>
+  body { background: #101010; margin: 0; padding: 0; }
+  main { margin: 0; padding: 0; }
+  * { box-sizing: border-box; }
+
+  /* Conteneur central unique pour toute la page */
+  .home-wrap {
+    width: 95vw;
+
+    margin: 0 auto;
+    padding: 0;
+  }
+
+  .home-separator {
+    height: 1px;
+    background: #212121;
+    margin: 0;
+  }
+
+  /* ── Section catégories ── */
+  .home-categories {
+    display: flex;
+    justify-content: center;
+    gap: 32px;
+    padding: 40px 0;
+    flex-wrap: wrap;
+  }
+
+  .cat-card {
+    position: relative;
+    width: 200px;
+    height: 288px;
+    border-radius: 5px;
+    overflow: hidden;
+    border: 3px solid #aaaaaa;
+    cursor: pointer;
+    text-decoration: none;
+    flex-shrink: 0;
+    transition: border-color 0.2s;
+    display: block;
+  }
+  .cat-card:hover { border-color: #4ca2d8; }
+
+  .cat-card-bg {
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center;
+    filter: blur(4px);
+    transform: scale(1.08);
+  }
+
+  .cat-card-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.45);
+  }
+
+  .cat-card-content {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding-top: 32px;
+    padding-bottom: 32px;
+  }
+
+  .cat-card-icon {
+    width: 48px;
+    height: 48px;
+    object-fit: contain;
+    filter: drop-shadow(0 2px 6px rgba(0,0,0,0.6));
+  }
+
+  .cat-card-label {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: 22px;
+    font-weight: 900;
+    color: #ffffff;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.8);
+  }
+
+  /* ── Sections récents ── */
+  .home-section {
+    padding: 28px 0 36px;
+  }
+
+  .home-section-title {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: 23px;
+    font-weight: 400;
+    color: #ffffff;
+    margin-bottom: 20px;
+  }
+
+  .home-recent-grid {
+    display: flex;
+    gap: 14px;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding-bottom: 8px;
+    /* Centrage : largeur exacte de 10 cards + 9 gaps, centrée dans home-wrap */
+    width: fit-content;
+    margin: 0 auto;
+  }
+
+  .home-recent-grid::-webkit-scrollbar { height: 4px; }
+  .home-recent-grid::-webkit-scrollbar-track { background: transparent; }
+  .home-recent-grid::-webkit-scrollbar-thumb { background: #333; border-radius: 2px; }
+
+  .recent-card {
+    flex-shrink: 0;
+    width: 200px;
+    height: 288px;
+    border-radius: 5px;
+    border: 3px solid #aaaaaa;
+    overflow: hidden;
+    cursor: pointer;
+    text-decoration: none;
+    display: block;
+    transition: border-color 0.2s;
+    background: #1a1a1a;
+  }
+  .recent-card:hover { border-color: #4ca2d8; }
+
+  .recent-card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .recent-card-skeleton {
+    flex-shrink: 0;
+    width: 160px;
+    height: 230px;
+    border-radius: 5px;
+    border: 3px solid #2a2a2a;
+    background: linear-gradient(90deg, #1a1a1a 25%, #252525 50%, #1a1a1a 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.4s infinite;
+  }
+  @keyframes shimmer {
+    0%   { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+  }
+</style>
+
+<main>
+<div class="home-wrap">
+
+  {{#displayNoFileMessage}}
+  <div style="text-align:center;padding:80px 20px;color:#555;">
+    <div style="font-size:48px;margin-bottom:16px;">📭</div>
+    <p style="font-size:18px;font-weight:700;color:#666;">Aucune bibliothèque partagée</p>
+  </div>
+  {{/displayNoFileMessage}}
+
+  <!-- Grandes cards catégories -->
+  <div class="home-categories">
+    {{#categories}}
+    <a class="cat-card"
+       href="{{categoryUrl}}"
+       data-category-id="{{categoryId}}"
+       data-latest-url="{{categoryLatestUrl}}">
+      <div class="cat-card-bg" id="bg-{{categoryId}}"></div>
+      <div class="cat-card-overlay"></div>
+      <div class="cat-card-content">
+<!--        <img class="cat-card-icon"
+             src="{{rootPath}}/theme/common/{{categoryId}}.png"
+             alt="{{categoryName}}"
+             onerror="this.style.display='none'"/>-->
+        <span class="cat-card-label">{{categoryName}}</span>
+      </div>
+    </a>
+    {{/categories}}
+  </div>
+
+  <div class="home-separator"></div>
+
+  <!-- Sections récemment ajoutés -->
+  {{#categories}}
+  <div class="home-section">
+    <div class="home-section-title">{{categoryName}} ajoutés récemment</div>
+    <div class="home-recent-grid" id="grid-{{categoryId}}">
+      <div class="recent-card-skeleton"></div>
+      <div class="recent-card-skeleton"></div>
+      <div class="recent-card-skeleton"></div>
+      <div class="recent-card-skeleton"></div>
+      <div class="recent-card-skeleton"></div>
+      <div class="recent-card-skeleton"></div>
+      <div class="recent-card-skeleton"></div>
+      <div class="recent-card-skeleton"></div>
+      <div class="recent-card-skeleton"></div>
+      <div class="recent-card-skeleton"></div>
+    </div>
+  </div>
+  <div class="home-separator"></div>
+  {{/categories}}
+
+</div>
+</main>
+
+<script>
+(function () {
+  var rootPath = '{{rootPath}}';
+
+  // Image de fond + items récents : un seul fetch par catégorie (la page "latest")
+  document.querySelectorAll('.cat-card').forEach(function (card) {
+    var catId     = card.dataset.categoryId;
+    var latestUrl = card.dataset.latestUrl;
+    var bgEl      = document.getElementById('bg-' + catId);
+    var grid      = document.getElementById('grid-' + catId);
+    if (!latestUrl) return;
+
+    fetch(latestUrl)
+      .then(function (r) { return r.text(); })
+      .then(function (html) {
+        var doc   = new DOMParser().parseFromString(html, 'text/html');
+        var imgs  = doc.querySelectorAll('.book img, #booksContainer img');
+        if (!imgs.length) imgs = doc.querySelectorAll('img[src*="cover"], img[src*="thumbnail"]');
+
+        // ── Fond de la grande card : cover aléatoire parmi les récents ──
+        if (bgEl && imgs.length) {
+          var pick = imgs[Math.floor(Math.random() * imgs.length)];
+          bgEl.style.backgroundImage = 'url(' + pick.src + ')';
+        }
+
+        // ── Grille des 10 récents ──
+        if (!grid) return;
+        grid.innerHTML = '';
+
+        if (!imgs.length) {
+          grid.innerHTML = '<span style="color:#444;font-size:13px;">Aucun élément récent</span>';
+          return;
+        }
+
+        var count = Math.min(imgs.length, 10);
+        for (var i = 0; i < count; i++) {
+          var img    = imgs[i];
+          var anchor = img.closest('a') || img.closest('.book');
+          var href   = anchor ? (anchor.href || (anchor.querySelector('a') && anchor.querySelector('a').href)) : latestUrl;
+
+          var a      = document.createElement('a');
+          a.className = 'recent-card';
+          a.href      = href || latestUrl;
+
+          var im     = document.createElement('img');
+          im.src     = img.src;
+          im.alt     = img.alt || '';
+          im.loading = 'lazy';
+          a.appendChild(im);
+          grid.appendChild(a);
+        }
+      })
+      .catch(function () {
+        if (grid) grid.innerHTML = '<span style="color:#444;font-size:13px;">Impossible de charger les éléments récents</span>';
+      });
+  });
+
+  // (fetch unique ci-dessus remplace les deux boucles séparées)
+  // Chargement des 10 items récents par catégorie — FUSIONNÉ ci-dessus
+
+})();
+</script>
+
+<footer id="footer" style="border-top:1px solid #212121;padding:16px 32px;text-align:center;font-size:12px;color:#333;">
+  Propulsé par <a href="https://vaemendis.net/ubooquity/" style="color:#4ca2d8;">Ubooquity</a> · Thème Jellyquity
+</footer>
+</body>
+</html>
