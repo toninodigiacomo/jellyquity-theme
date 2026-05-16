@@ -1,4 +1,7 @@
 <!DOCTYPE html>
+<link rel="icon" type="image/png" sizes="16x16" href="{{rootPath}}/theme/common/favicon-16x16.png"/>
+<link rel="icon" type="image/png" sizes="32x32" href="{{rootPath}}/theme/common/favicon-32x32.png"/>
+<link rel="icon" type="image/png" sizes="96x96" href="{{rootPath}}/theme/common/favicon-96x96.png"/>
 <html lang="fr">
 <head>
   <meta charset="UTF-8"/>
@@ -17,38 +20,32 @@
     <div style="display:flex;align-items:center;gap:10px;flex:1;">
       <a href="{{rootPath}}/" style="display:flex;align-items:center;gap:10px;text-decoration:none;">
         <img src="{{rootPath}}/theme/common/logo.png" alt="Ubooquity"
-             style="width:36px;height:36px;object-fit:contain;flex-shrink:0;"/>
+            style="width:36px;height:36px;object-fit:contain;flex-shrink:0;"/>
         <span id="siteTitle">Ubooquity</span>
       </a>
     </div>
 
-    <!-- Bouton Accueil — id présent pour le JS -->
-    <nav id="nav-home" style="display:flex;align-items:right;justify-content:right;flex:1;">
+
+    <!-- Boutons Recherche, Accueil — id présent pour le JS -->
+    <nav id="navigation-buttons" style="display:flex;align-items:right;justify-content:right;flex:0;">
+      <a href="#" title="Recherche" onclick="toggleSearch(event)"
+         id="btn-search"
+         style="display:inline-flex;align-items:right;padding:7px;border-radius:8px;transition:opacity 0.2s;opacity:0.55;"
+         onmouseover="this.style.opacity='1';"
+         onmouseout="this.style.opacity='0.55';">
+         <img src="{{rootPath}}/theme/common/icon-search.svg" alt="Recherche"
+            style="width:24px;height:24px;display:block;"/>
+      </a>
       <a href="{{rootPath}}/" title="Accueil"
          id="btn-home"
          style="display:inline-flex;align-items:right;padding:7px;border-radius:8px;transition:opacity 0.2s;opacity:0.55;"
          onmouseover="this.style.opacity='1';"
          onmouseout="this.style.opacity='0.55';">
-        <img src="{{rootPath}}/theme/common/icon-home.svg" alt="Accueil"
-             style="width:24px;height:24px;display:block;"/>
+         <img src="{{rootPath}}/theme/common/icon-home.svg" alt="Accueil"
+            style="width:24px;height:24px;display:block;"/>
       </a>
     </nav>
 
-    <!-- Barre de recherche + user -->
-    <div style="display:flex;align-items:center;gap:12px;">
-      <!--
-      <form id="topbar-search-form" method="get" action="" style="margin:0;">
-        <input
-          type="search"
-          id="topbar-search-input"
-          name="search"
-          placeholder="Rechercher…"
-          autocomplete="off"
-          style="width:200px;"
-        />
-      </form>
-      -->
-      
       {{#userName}}
       <div style="display:flex;align-items:center;gap:10px;margin-left:4px;flex-shrink:0;">
         <!-- Avatar initiale -->
@@ -70,7 +67,23 @@
         </a>
       </div>
       {{/userName}}
-    </div>
+
+      <div id="search-popup" style="display:none;position:fixed;top:56px;right:16px;
+        background:#1c1c1c;border:1px solid rgba(255,255,255,0.1);border-radius:8px;
+        padding:16px;z-index:2000;box-shadow:0 8px 24px rgba(0,0,0,0.5);">
+        <form id="header-search-form" style="display:flex;gap:8px;">
+          <input type="search" id="header-search-input" placeholder="Rechercher…"
+            style="background:#101010;border:1px solid rgba(255,255,255,0.15);
+            border-radius:6px;color:#fff;font-family:'Noto Sans',sans-serif;
+            font-size:14px;padding:8px 12px;outline:none;width:220px;"/>
+          <button type="submit"
+            style="background:#4ca2d8;border:none;border-radius:6px;color:#fff;
+            font-family:'Noto Sans',sans-serif;font-size:14px;font-weight:700;
+            padding:8px 14px;cursor:pointer;">
+            Rechercher
+          </button>
+        </form>
+      </div>
 
   </header>
 
@@ -93,50 +106,54 @@
     var cleanRoot = (rootPath || '').replace(/\/$/, '');
     var isHome = (cleanPath === cleanRoot || cleanPath === '' || cleanPath === '/');
 
-    var nav = document.getElementById('nav-home');
+    var nav = document.getElementById('navigation-buttons');
     if (nav) {
       nav.style.visibility = isHome ? 'hidden' : 'visible';
     }
 
-    // ── Barre de recherche ──────────────────────────────────────
-    // Ubooquity n'a pas d'endpoint de recherche global dans l'URL.
-    // On délègue au formulaire natif qu'Ubooquity injecte via
-    // inc-library-topbar-search.html (présent uniquement sur les pages library).
-    // Sur les autres pages (home, login…), le champ est masqué.
-    var searchForm  = document.getElementById('topbar-search-form');
-    var searchInput = document.getElementById('topbar-search-input');
+    // ── Popup recherche ──────────────────────────────────────
+    window.toggleSearch = function(e) {
+      e.preventDefault();
+      var popup = document.getElementById('search-popup');
+      if (!popup) return;
+      var visible = popup.style.display !== 'none';
+      popup.style.display = visible ? 'none' : 'block';
+      if (!visible) document.getElementById('header-search-input').focus();
+    };
 
-    // On attend que la page soit complètement chargée pour chercher
-    // le formulaire natif (injecté par le partial Ubooquity)
-    window.addEventListener('load', function () {
-      // Le formulaire natif de recherche injecté par Ubooquity
-      // contient un input[name="search"] différent du nôtre
-      var nativeForms = document.querySelectorAll('form[action]');
-      var nativeSearchForm = null;
-      for (var i = 0; i < nativeForms.length; i++) {
-        var f = nativeForms[i];
-        if (f.id !== 'topbar-search-form' && f.querySelector('input[name="search"]')) {
-          nativeSearchForm = f;
-          break;
-        }
-      }
-
-      if (!nativeSearchForm || isHome) {
-        // Pas de formulaire natif trouvé (home, login…) : on masque
-        if (searchForm) searchForm.style.display = 'none';
-      } else {
-        // Formulaire natif trouvé : on lui délègue le submit
-        var nativeInput = nativeSearchForm.querySelector('input[name="search"]');
-        if (searchForm && searchInput) {
-          searchForm.addEventListener('submit', function (e) {
-            e.preventDefault();
-            var val = searchInput.value.trim();
-            if (!val) return;
-            if (nativeInput) nativeInput.value = val;
-            nativeSearchForm.submit();
-          });
-        }
+    // Ferme la popup si on clique ailleurs
+    document.addEventListener('click', function(e) {
+      var popup = document.getElementById('search-popup');
+      var btn   = document.getElementById('btn-search');
+      if (popup && btn && !popup.contains(e.target) && !btn.contains(e.target)) {
+        popup.style.display = 'none';
       }
     });
+
+    // Submit : construit l'URL depuis la catégorie courante
+    var searchForm = document.getElementById('header-search-form');
+    if (searchForm) {
+      searchForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        var val = document.getElementById('header-search-input').value.trim();
+        if (!val) return;
+
+        // Ubooquity attend : POST vers ?search=simple avec searchstring=<terme>
+        // On crée un formulaire temporaire et on le soumet
+        var form = document.createElement('form');
+        form.method = 'POST';
+        form.action = '?search=simple';
+
+        var input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = 'searchstring';
+        input.value = val;
+
+        form.appendChild(input);
+        document.body.appendChild(form);
+        form.submit();
+      });
+    }
+
   })();
   </script>
