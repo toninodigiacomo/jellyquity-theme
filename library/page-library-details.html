@@ -1,70 +1,88 @@
-<!-- ============================================================
-     Details panel — partial inclus dans page-library.html
-     Variables dispo : itemCoverUrl, itemTitle, seriesName,
-     seriesIndex, writers, publicationDate, language, fileExtension,
-     fileSize, rating, tags, description, readerUrl, downloadUrl,
-     progress, readingStatusClass, rootPath
-     ============================================================ -->
+<!-- Details panel — partial inclus dans page-library.html -->
 <div id="detailsOverlay"
-     style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:2000;align-items:center;justify-content:center;backdrop-filter:blur(4px);"
+     style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:2000;align-items:center;justify-content:center;backdrop-filter:blur(4px);"
      onclick="if(event.target===this)closeDetails();">
 
   <div id="detailsPanel"
-       style="background:#1c1c1c;border:1px solid rgba(255,255,255,0.08);border-radius:14px;box-shadow:0 24px 64px rgba(0,0,0,0.7);width:min(660px,95vw);max-height:90vh;overflow-y:auto;position:relative;">
+       style="background:#1c1c1c;border:1px solid rgba(255,255,255,0.08);border-radius:12px;box-shadow:0 24px 64px rgba(0,0,0,0.7);width:min(760px,95vw);max-height:90vh;overflow-y:auto;position:relative;font-family:'Noto Sans',sans-serif;">
 
-    <!-- Close button -->
+    <!-- Bouton fermer -->
     <button onclick="closeDetails()"
-            style="position:absolute;top:14px;right:14px;background:#252525;border:1px solid rgba(255,255,255,0.1);border-radius:50%;width:34px;height:34px;color:#aaa;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;padding:0;z-index:10;transition:all 0.2s;"
-            onmouseover="this.style.background='#00a4dc';this.style.color='#fff';"
+            style="position:absolute;top:12px;right:12px;background:#252525;border:1px solid rgba(255,255,255,0.1);border-radius:50%;width:32px;height:32px;color:#aaa;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;z-index:10;transition:all 0.2s;line-height:1;"
+            onmouseover="this.style.background='#4ca2d8';this.style.color='#fff';"
             onmouseout="this.style.background='#252525';this.style.color='#aaa';">
       ×
     </button>
 
-    <div style="display:flex;gap:32px;padding:32px;align-items:flex-start;">
+    <div style="display:flex;gap:24px;padding:28px;align-items:flex-start;">
 
-      <!-- Cover -->
+      <!-- Couverture + progression -->
       <div style="flex-shrink:0;width:180px;">
         <img id="detailsCover" src="" alt=""
-             style="width:100%;border-radius:8px;box-shadow:0 12px 32px rgba(0,0,0,0.6);display:block;"
-             onerror="this.style.display='none';document.getElementById('detailsCoverFallback').style.display='flex';" />
+             style="width:180px;border-radius:6px;border:3px solid #aaaaaa;box-shadow:0 8px 24px rgba(0,0,0,0.5);display:block;"
+             onerror="this.style.display='none';document.getElementById('detailsCoverFallback').style.display='flex';"/>
         <div id="detailsCoverFallback"
-             style="display:none;width:100%;aspect-ratio:2/3;background:#252525;align-items:center;justify-content:center;border-radius:8px;font-size:48px;">📚</div>
+             style="display:none;width:180px;height:260px;background:#252525;align-items:center;justify-content:center;border-radius:6px;font-size:48px;">📚</div>
 
-        <!-- Progress bar -->
-        <div id="detailsProgressSection" style="margin-top:12px;display:none;">
+        <!-- Barre de progression -->
+        <div id="detailsProgressSection" style="margin-top:10px;display:none;">
           <div style="display:flex;justify-content:space-between;font-size:11px;color:#666;font-weight:700;margin-bottom:4px;">
             <span>Progression</span>
-            <span id="detailsProgressValue" style="color:#00a4dc;"></span>
+            <span id="detailsProgressValue" style="color:#4ca2d8;"></span>
           </div>
-          <div style="height:4px;background:#2e2e2e;border-radius:2px;overflow:hidden;">
-            <div id="detailsProgressBar" style="height:100%;background:#00a4dc;border-radius:2px;transition:width 0.3s;width:0%;"></div>
+          <div style="height:3px;background:#2e2e2e;border-radius:2px;overflow:hidden;">
+            <div id="detailsProgressBar" style="height:100%;background:#4ca2d8;border-radius:2px;transition:width 0.3s;width:0%;"></div>
           </div>
         </div>
       </div>
 
-      <!-- Info -->
-      <div style="flex:1;min-width:0;">
+      <!-- Infos -->
+      <div style="flex:1;min-width:0;padding-right:32px;">
 
+        <!-- Titre -->
         <h2 id="detailsTitle"
-            style="font-size:22px;font-weight:800;letter-spacing:-0.02em;color:#fff;margin-bottom:8px;line-height:1.25;padding-right:40px;">
-        </h2>
+            style="font-size:22px;font-weight:900;color:#ffffff;margin:0 0 4px 0;line-height:1.2;"></h2>
 
-        <div id="detailsWriter" style="font-size:13px;color:#00a4dc;font-weight:700;margin-bottom:6px;display:none;"></div>
+        <!-- Auteur -->
+        <div id="detailsWriters"
+             style="font-size:15px;font-weight:700;color:#4ca2d8;margin-bottom:16px;display:none;"></div>
 
-        <div id="detailsSeries" style="font-size:16px;color:#00a4dc;font-weight:900;margin-bottom:14px;display:none;"></div>
-
-        <!-- Meta badges -->
-        <div id="detailsMeta" style="display:flex;gap:7px;flex-wrap:wrap;margin-bottom:16px;"></div>
+        <!-- Série -->
+        <div id="detailsSeries"
+             style="display:none;align-items:center;gap:8px;margin-bottom:10px;">
+          <span style="font-size:13px;color:#888;">☰</span>
+          <span id="detailsSeriesText" style="font-size:14px;color:#ccc;font-weight:600;"></span>
+        </div>
 
         <!-- Tags -->
-        <div id="detailsTags" style="font-size:12px;color:#00a4dc;margin-bottom:18px;display:none;"></div>
+        <div id="detailsTags"
+             style="display:none;align-items:center;gap:8px;margin-bottom:10px;">
+          <span style="font-size:13px;color:#888;">◇</span>
+          <span id="detailsTagsText" style="font-size:14px;color:#ccc;font-style:italic;"></span>
+        </div>
 
-        <!-- Action buttons -->
-        <div id="detailsActions" style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px;"></div>
+        <!-- Langue -->
+        <div id="detailsLanguage"
+             style="display:none;align-items:center;gap:8px;margin-bottom:10px;">
+          <span style="font-size:13px;color:#888;">🌐</span>
+          <span id="detailsLanguageText" style="font-size:14px;color:#ccc;"></span>
+        </div>
+
+        <!-- Format + Taille + Date -->
+        <div id="detailsFileMeta"
+             style="font-size:13px;color:#888;margin-bottom:20px;display:none;"></div>
+
+        <!-- Séparateur -->
+        <div style="height:1px;background:rgba(255,255,255,0.07);margin-bottom:20px;"></div>
+
+        <!-- 4 icônes d'action -->
+        <div id="detailsActions"
+             style="display:flex;align-items:center;gap:28px;margin-bottom:20px;">
+        </div>
 
         <!-- Description -->
         <div id="detailsDesc"
-             style="color:#bbb;font-size:13px;line-height:1.7;border-top:1px solid rgba(255,255,255,0.07);padding-top:16px;display:none;">
+             style="display:none;font-size:13px;color:#bbb;line-height:1.75;border-top:1px solid rgba(255,255,255,0.07);padding-top:16px;max-height:180px;overflow-y:auto;">
         </div>
 
       </div>
@@ -73,11 +91,10 @@
 </div>
 
 <script>
-// Données des items injectées par Ubooquity via le template
-// On stocke les infos dans des data-attributes sur chaque card
 (function() {
-  // Patch : après le rendu Mustache, les cards ont déjà leurs données en attributs
-  // showDetails() est appelé au clic sur une card dans page-library.html
+  var rootPath = '';
+  // Récupère rootPath depuis une variable globale si disponible
+  try { rootPath = window._rootPath || ''; } catch(e) {}
 
   window.closeDetails = function() {
     var overlay = document.getElementById('detailsOverlay');
@@ -87,9 +104,153 @@
     }
   };
 
-  // Fermeture avec Escape
   document.addEventListener('keydown', function(e) {
     if (e.key === 'Escape') closeDetails();
   });
+
+  function setVisible(id, visible, flex) {
+    var el = document.getElementById(id);
+    if (el) el.style.display = visible ? (flex ? 'flex' : 'block') : 'none';
+  }
+
+  window.openDetails = function(d) {
+    var rp = d.rootpath || '';
+
+    // Couverture
+    var cover    = document.getElementById('detailsCover');
+    var fallback = document.getElementById('detailsCoverFallback');
+    if (d.cover) {
+      cover.src = d.cover;
+      cover.style.display = 'block';
+      if (fallback) fallback.style.display = 'none';
+    }
+
+    // Titre
+    document.getElementById('detailsTitle').textContent = d.title || '';
+
+    // Auteur
+    var writersEl = document.getElementById('detailsWriters');
+    if (d.writers) {
+      writersEl.textContent = d.writers;
+      writersEl.style.display = 'block';
+    } else {
+      writersEl.style.display = 'none';
+    }
+
+    // Série
+    var seriesEl    = document.getElementById('detailsSeries');
+    var seriesText  = document.getElementById('detailsSeriesText');
+    if (d.series) {
+      seriesText.textContent = d.series + (d.seriesindex ? ' - ' + d.seriesindex : '');
+      seriesEl.style.display = 'flex';
+    } else {
+      seriesEl.style.display = 'none';
+    }
+
+    // Tags
+    var tagsEl   = document.getElementById('detailsTags');
+    var tagsText = document.getElementById('detailsTagsText');
+    if (d.tags) {
+      tagsText.textContent = d.tags;
+      tagsEl.style.display = 'flex';
+    } else {
+      tagsEl.style.display = 'none';
+    }
+
+    // Langue
+    var langEl   = document.getElementById('detailsLanguage');
+    var langText = document.getElementById('detailsLanguageText');
+    if (d.language) {
+      langText.textContent = d.language;
+      langEl.style.display = 'flex';
+    } else {
+      langEl.style.display = 'none';
+    }
+
+    // Format + taille + date
+    var fileMeta = document.getElementById('detailsFileMeta');
+    var parts = [];
+    if (d.ext)  parts.push('□ ' + d.ext);
+    if (d.size) parts.push('(' + d.size + ')');
+    if (d.date) parts.push('Published on ' + d.date);
+    if (parts.length) {
+      fileMeta.textContent = parts.join('  ');
+      fileMeta.style.display = 'block';
+    } else {
+      fileMeta.style.display = 'none';
+    }
+
+    // Progression
+    var progressSection = document.getElementById('detailsProgressSection');
+    if (d.progress && d.progress !== '0') {
+      document.getElementById('detailsProgressValue').textContent = d.progress + '%';
+      document.getElementById('detailsProgressBar').style.width = d.progress + '%';
+      progressSection.style.display = 'block';
+    } else {
+      progressSection.style.display = 'none';
+    }
+
+    // 4 icônes d'action
+    var actionsEl = document.getElementById('detailsActions');
+    actionsEl.innerHTML = '';
+
+    var iconStyle = 'width:32px;height:32px;display:block;filter:invert(0.7);transition:filter 0.2s;cursor:pointer;';
+    var iconHover = 'filter:invert(1);';
+
+    // Télécharger
+    if (d.download) {
+      var lnkDl = document.createElement('a');
+      lnkDl.href = d.download;
+      lnkDl.title = 'Télécharger';
+      var imgDl = document.createElement('img');
+      imgDl.src = rp + '/theme/common/icon-download.svg';
+      imgDl.style.cssText = iconStyle;
+      imgDl.onmouseover = function() { this.style.filter = 'invert(1)'; };
+      imgDl.onmouseout  = function() { this.style.filter = 'invert(0.7)'; };
+      lnkDl.appendChild(imgDl);
+      actionsEl.appendChild(lnkDl);
+    }
+
+    // Lire
+    if (d.reader) {
+      var lnkRead = document.createElement('a');
+      lnkRead.href = d.reader;
+      lnkRead.title = 'Lire';
+      var imgRead = document.createElement('img');
+      imgRead.src = rp + '/theme/common/icon-read.svg';
+      imgRead.style.cssText = iconStyle;
+      imgRead.onmouseover = function() { this.style.filter = 'invert(1)'; };
+      imgRead.onmouseout  = function() { this.style.filter = 'invert(0.7)'; };
+      lnkRead.appendChild(imgRead);
+      actionsEl.appendChild(lnkRead);
+    }
+
+    // Marquer non-lu
+    var btnUnread = document.createElement('img');
+    btnUnread.src = rp + '/theme/common/icon-unread.svg';
+    btnUnread.title = 'Marquer non-lu';
+    btnUnread.style.cssText = iconStyle;
+    btnUnread.onmouseover = function() { this.style.filter = 'invert(1)'; };
+    btnUnread.onmouseout  = function() { this.style.filter = 'invert(0.7)'; };
+    actionsEl.appendChild(btnUnread);
+
+    // Marquer terminé
+    var btnFinished = document.createElement('img');
+    btnFinished.src = rp + '/theme/common/icon-finished.svg';
+    btnFinished.title = 'Marquer terminé';
+    btnFinished.style.cssText = iconStyle;
+    btnFinished.onmouseover = function() { this.style.filter = 'invert(1)'; };
+    btnFinished.onmouseout  = function() { this.style.filter = 'invert(0.7)'; };
+    actionsEl.appendChild(btnFinished);
+
+    // Description
+    var descEl = document.getElementById('detailsDesc');
+    descEl.style.display = 'none';
+
+    // Affiche l'overlay
+    var overlay = document.getElementById('detailsOverlay');
+    overlay.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+  };
 })();
 </script>

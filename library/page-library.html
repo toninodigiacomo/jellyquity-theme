@@ -1,11 +1,18 @@
 {{>common/inc-header.html}}
+<link rel="stylesheet" type="text/css" href="{{rootPath}}/theme/library/library.css"/>
 
 <style>
-  /* Cache les popups indésirables */
+  /* Hide unwanted pop-ups */
   #pageselector, #searchbox, #settingsbox { display: none !important; }
   #topbarcenter, #topbarright { display: none !important; }
 
-  /* Grille centrée sur 6 colonnes */
+  /* Images of the action buttons (requires a resolved rootPath) */
+  #details_download    { background-image: url('/theme/common/icon-download.svg'); }
+  #details_read        { background-image: url('/theme/common/icon-read.svg'); }
+  #details_mark_unread { background-image: url('/theme/common/icon-unread.svg'); }
+  #details_mark_finished { background-image: url('/theme/common/icon-finished.svg'); }
+
+  /* 6-column centered grid */
   #booksContainer {
     display: grid !important;
     grid-template-columns: repeat(6, 200px) !important;
@@ -29,7 +36,9 @@
     border: 3px solid #aaaaaa !important;
     display: block !important;
     transition: border-color 0.2s !important;
+    box-shadow: none !important;
   }
+  
   #booksContainer .book:hover img {
     border-color: #4ca2d8 !important;
   }
@@ -46,218 +55,6 @@
     text-overflow: ellipsis !important;
     width: 200px !important;
   }
-
-  /* Popup bookdetails */
-  #bookdetails {
-    position: fixed !important;
-    top: 50% !important;
-    left: 50% !important;
-    transform: translate(-50%, -50%) !important;
-    width: min(760px, 95vw) !important;
-    max-height: 90vh !important;
-    overflow-y: auto !important;
-    background: #1c1c1c !important;
-    border: 1px solid rgba(255,255,255,0.08) !important;
-    border-radius: 14px !important;
-    box-shadow: 0 24px 64px rgba(0,0,0,0.7) !important;
-    z-index: 2000 !important;
-    padding: 28px 32px !important;
-    font-family: 'Noto Sans', sans-serif !important;
-    color: #ffffff !important;
-    /* NE PAS mettre display:none ici — togglePopup gère display:inline */
-  }
-
-  /* Dimoverlay */
-  #dimoverlay {
-    position: fixed !important;
-    inset: 0 !important;
-    background: rgba(0,0,0,0.75) !important;
-    z-index: 1999 !important;
-    visibility: hidden;
-  }
-
-  /* Styles du contenu du popup généré par Ubooquity */
-  #details {
-    display: flex !important;
-    gap: 24px !important;
-    align-items: flex-start !important;
-  }
-
-  #details_cover img {
-    width: 180px !important;
-    border-radius: 6px !important;
-    border: 3px solid #aaaaaa !important;
-    display: block !important;
-  }
-
-  #details_cover_progress {
-    flex-shrink: 0 !important;
-    width: 180px !important;
-  }
-
-  #details_right_col {
-    flex: 1 !important;
-    min-width: 0 !important;
-  }
-
-  #details_title {
-    font-size: 22px !important;
-    font-weight: 900 !important;
-    color: #ffffff !important;
-    margin-bottom: 6px !important;
-    line-height: 1.2 !important;
-  }
-
-  #details_authors {
-    font-size: 15px !important;
-    font-weight: 700 !important;
-    color: #4ca2d8 !important;
-    margin-bottom: 14px !important;
-  }
-
-  #details_series {
-    font-size: 14px !important;
-    color: #aaaaaa !important;
-    margin-bottom: 8px !important;
-  }
-
-  #details_tags {
-    font-size: 13px !important;
-    color: #aaaaaa !important;
-    font-style: italic !important;
-    margin-bottom: 8px !important;
-  }
-
-  #details_language {
-    font-size: 13px !important;
-    color: #aaaaaa !important;
-    margin-bottom: 8px !important;
-  }
-
-  #details_file {
-    font-size: 13px !important;
-    color: #888888 !important;
-    margin-bottom: 4px !important;
-  }
-
-  #details_publication {
-    font-size: 13px !important;
-    font-style: italic !important;
-    color: #888888 !important;
-    margin-bottom: 16px !important;
-  }
-
-  #details_button_row {
-    display: flex !important;
-    gap: 20px !important;
-    margin-top: 20px !important;
-    padding-top: 16px !important;
-    border-top: 1px solid rgba(255,255,255,0.07) !important;
-    align-items: center !important;
-  }
-
-  #details_description {
-    font-size: 13px !important;
-    color: #bbbbbb !important;
-    line-height: 1.75 !important;
-    margin-top: 20px !important;
-    padding-top: 16px !important;
-    border-top: 1px solid rgba(255,255,255,0.07) !important;
-  }
-
-  /* Boutons d'action */
-  #details_download {
-    display: inline-block !important;
-    width: 32px !important;
-    height: 32px !important;
-    background-image: url('{{rootPath}}/theme/common/icon-download.svg') !important;
-    background-size: contain !important;
-    background-repeat: no-repeat !important;
-    opacity: 0.5 !important;
-    transition: opacity 0.2s !important;
-  }
-  #details_download:hover { opacity: 1 !important; }
-
-  #details_read {
-    display: inline-block !important;
-    width: 32px !important;
-    height: 32px !important;
-    background-image: url('{{rootPath}}/theme/common/icon-read.svg') !important;
-    background-size: contain !important;
-    background-repeat: no-repeat !important;
-    opacity: 0.5 !important;
-    transition: opacity 0.2s !important;
-  }
-  #details_read:hover { opacity: 1 !important; }
-
-  #details_mark_unread {
-    display: inline-block !important;
-    width: 32px !important;
-    height: 32px !important;
-    background-image: url('{{rootPath}}/theme/common/icon-unread.svg') !important;
-    background-size: contain !important;
-    background-repeat: no-repeat !important;
-    opacity: 0.5 !important;
-    transition: opacity 0.2s !important;
-  }
-  #details_mark_unread:hover { opacity: 1 !important; }
-
-  #details_mark_finished {
-    display: inline-block !important;
-    width: 32px !important;
-    height: 32px !important;
-    background-image: url('{{rootPath}}/theme/common/icon-finished.svg') !important;
-    background-size: contain !important;
-    background-repeat: no-repeat !important;
-    opacity: 0.5 !important;
-    transition: opacity 0.2s !important;
-  }
-  #details_mark_finished:hover { opacity: 1 !important; }
-
-  /* Barre de progression */
-  .details_progress_bar {
-    height: 3px !important;
-    background: #2e2e2e !important;
-    border-radius: 2px !important;
-    margin-top: 8px !important;
-    overflow: hidden !important;
-  }
-  .details_progress_bar_fill {
-    display: block !important;
-    height: 100% !important;
-    width: var(--value) !important;
-    background: #4ca2d8 !important;
-    border-radius: 2px !important;
-  }
-
-
-  /* Bouton fermer */
-  #details_close {
-    position: absolute !important;
-    top: 14px !important;
-    right: 14px !important;
-    width: 32px !important;
-    height: 32px !important;
-    background: #252525 !important;
-    border: 1px solid rgba(255,255,255,0.1) !important;
-    border-radius: 50% !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    color: #aaa !important;
-    font-size: 18px !important;
-    text-decoration: none !important;
-    transition: all 0.2s !important;
-    z-index: 10 !important;
-  }
-  #details_close::after { content: '×' !important; }
-  #details_close:hover {
-    background: #4ca2d8 !important;
-    color: #fff !important;
-  }
-
-  /* Rating */
-  .details_rating { display: none !important; }
 </style>
 
 <main id="content">
@@ -331,40 +128,6 @@
 </main>
 
 {{>library/inc-library-popups.html}}
-
-<script>
-// Cache bookdetails au chargement
-document.addEventListener('DOMContentLoaded', function() {
-  var el = document.getElementById('bookdetails');
-  if (el) el.style.display = 'none';
-});
-
-// Intercepte loadBookDetails pour repositionner après le chargement AJAX
-var origLoadBookDetails = loadBookDetails;
-loadBookDetails = function(itemId, rootPath) {
-  origLoadBookDetails(itemId, rootPath);
-  // Surveille le contenu jusqu'à ce qu'il soit chargé
-  var attempts = 0;
-  var interval = setInterval(function() {
-    var el = document.getElementById('bookdetails');
-    attempts++;
-    if (attempts > 20) { clearInterval(interval); return; }
-    if (el && el.innerHTML.length > 100) {
-      clearInterval(interval);
-      var w = Math.min(760, window.innerWidth * 0.95);
-      var h = Math.min(el.scrollHeight, window.innerHeight * 0.9);
-      el.style.position = 'fixed';
-      el.style.width = w + 'px';
-      el.style.maxHeight = (window.innerHeight * 0.9) + 'px';
-      el.style.overflowY = 'auto';
-      el.style.left = Math.round((window.innerWidth - w) / 2) + 'px';
-      el.style.top = Math.round((window.innerHeight - Math.min(el.scrollHeight, window.innerHeight * 0.9)) / 2) + 'px';
-      el.style.transform = 'none';
-      el.style.margin = '0';
-    }
-  }, 100);
-};
-</script>
 
 {{>common/inc-footer.html}}
 

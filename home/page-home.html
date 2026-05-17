@@ -5,7 +5,7 @@
   main { margin: 0; padding: 0; }
   * { box-sizing: border-box; }
 
-  /* Conteneur central unique pour toute la page */
+  /* ── A single central container for the entire page ────────────────────────────────────────────── */
   .home-wrap {
     width: 95vw;
 
@@ -19,7 +19,7 @@
     margin: 0;
   }
 
-  /* ── Section catégories ── */
+  /* ── Categories section ────────────────────────────────────────────────────────────────────────── */
   .home-categories {
     display: flex;
     justify-content: center;
@@ -87,7 +87,7 @@
     text-shadow: 0 2px 8px rgba(0,0,0,0.8);
   }
 
-  /* ── Sections récents ── */
+  /* ── Recent sections ───────────────────────────────────────────────────────────────────────────── */
   .home-section {
     padding: 28px 0 36px;
   }
@@ -106,7 +106,7 @@
     flex-wrap: nowrap;
     overflow-x: auto;
     padding-bottom: 8px;
-    /* Centrage : largeur exacte de 10 cards + 9 gaps, centrée dans home-wrap */
+    /* Centering : exact width of 10 cards + 9 gaps, centered in home-wrap */
     width: fit-content;
     margin: 0 auto;
   }
@@ -163,7 +163,7 @@
   </div>
   {{/displayNoFileMessage}}
 
-  <!-- Grandes cards catégories -->
+  <!-- Main category cards -->
   <div class="home-categories">
     {{#categories}}
     <a class="cat-card"
@@ -173,19 +173,30 @@
       <div class="cat-card-bg" id="bg-{{categoryId}}"></div>
       <div class="cat-card-overlay"></div>
       <div class="cat-card-content">
-<!--        <img class="cat-card-icon"
+        <img class="cat-card-icon"
              src="{{rootPath}}/theme/common/{{categoryId}}.png"
              alt="{{categoryName}}"
-             onerror="this.style.display='none'"/>-->
+             onerror="this.style.display='none'"/>
         <span class="cat-card-label">{{categoryName}}</span>
       </div>
     </a>
     {{/categories}}
+
+    {{#displayRawFiles}}
+    <a class="cat-card" href="{{rawFilesUrl}}" data-category-id="rawfiles" data-latest-url="">
+      <div class="cat-card-overlay" style="background:rgba(0,0,0,0.7);position:absolute;top:0;left:0;right:0;bottom:0;z-index:2;"></div>
+      <div class="cat-card-content">
+        <span style="font-size:40px;">📂</span>
+        <span class="cat-card-label">Raw Files</span>
+      </div>
+    </a>
+    {{/displayRawFiles}}
+
   </div>
 
   <div class="home-separator"></div>
 
-  <!-- Sections récemment ajoutés -->
+  <!-- Recently Added Sections -->
   {{#categories}}
   <div class="home-section">
     <div class="home-section-title">{{categoryName}} ajoutés récemment</div>
@@ -212,7 +223,7 @@
 (function () {
   var rootPath = '{{rootPath}}';
 
-  // Image de fond + items récents : un seul fetch par catégorie (la page "latest")
+  // ── Background image + recent items: one fetch per category (the “latest” page) ──────────────────
   document.querySelectorAll('.cat-card').forEach(function (card) {
     var catId     = card.dataset.categoryId;
     var latestUrl = card.dataset.latestUrl;
@@ -227,13 +238,13 @@
         var imgs  = doc.querySelectorAll('.book img, #booksContainer img');
         if (!imgs.length) imgs = doc.querySelectorAll('img[src*="cover"], img[src*="thumbnail"]');
 
-        // ── Fond de la grande card : cover aléatoire parmi les récents ──
+        // ── Background of the large card: a random cover from recent releases ──────────────────────
         if (bgEl && imgs.length) {
           var pick = imgs[Math.floor(Math.random() * imgs.length)];
           bgEl.style.backgroundImage = 'url(' + pick.src + ')';
         }
 
-        // ── Grille des 10 récents ──
+        // ── Grid of 10 recent items ────────────────────────────────────────────────────────────────
         if (!grid) return;
         grid.innerHTML = '';
 
@@ -265,8 +276,8 @@
       });
   });
 
-  // (fetch unique ci-dessus remplace les deux boucles séparées)
-  // Chargement des 10 items récents par catégorie — FUSIONNÉ ci-dessus
+  // (The single fetch above replaces the two separate loops)
+  // Loading the 10 most recent items by category — MERGED above
 
 })();
 </script>

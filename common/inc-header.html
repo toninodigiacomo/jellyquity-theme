@@ -16,18 +16,16 @@
 </head>
 <body>
   <header id="topbar">
-
-    <!-- Logo + titre -->
+    <!-- Logo + Title -->
     <div style="display:flex;align-items:center;gap:10px;flex:1;">
       <a href="{{rootPath}}/" style="display:flex;align-items:center;gap:10px;text-decoration:none;">
         <img src="{{rootPath}}/theme/common/logo.png" alt="Ubooquity"
-            style="width:36px;height:36px;object-fit:contain;flex-shrink:0;"/>
-        <span id="siteTitle">Ubooquity</span>
+             style="width:36px;height:36px;object-fit:contain;flex-shrink:0;"/>
+        <span id="siteTitle" style="font-family:'Noto Sans',sans-serif;font-size:26px;font-weight:700;color:#ffffff;letter-spacing:-0.04em;">Ubooquity</span>
       </a>
     </div>
 
-
-    <!-- Boutons Recherche, Accueil — id présent pour le JS -->
+    <!-- Search + Home buttons — Current ID for the JS -->
     <nav id="navigation-buttons" style="display:flex;align-items:right;justify-content:right;flex:0;">
       <a href="#" title="Recherche" onclick="toggleSearch(event)"
          id="btn-search"
@@ -42,7 +40,7 @@
          style="display:inline-flex;align-items:right;padding:7px;border-radius:8px;transition:opacity 0.2s;opacity:0.55;"
          onmouseover="this.style.opacity='1';"
          onmouseout="this.style.opacity='0.55';">
-         <img src="{{rootPath}}/theme/common/icon-home.svg" alt="Accueil"
+        <img src="{{rootPath}}/theme/common/icon-home.svg" alt="Accueil"
             style="width:24px;height:24px;display:block;"/>
       </a>
     </nav>
@@ -53,13 +51,13 @@
         <div id="user-avatar" style="width:32px;height:32px;background:#4ca2d8;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Noto Sans',sans-serif;font-weight:700;font-size:13px;color:#fff;flex-shrink:0;text-transform:uppercase;">
           {{userName}}
         </div>
-        <!-- Nom complet -->
+        <!-- Complete Name -->
         <span style="font-family:'Noto Sans',sans-serif;font-size:14px;font-weight:600;color:#ffffff;white-space:nowrap;">
           {{userName}}
         </span>
-        <!-- Séparateur -->
+        <!-- Separation -->
         <span style="color:#333;">|</span>
-        <!-- Lien déconnexion -->
+        <!-- DIsconnect link -->
         <a href="{{rootPath}}/?logout=true"
            style="font-family:'Noto Sans',sans-serif;font-size:13px;font-weight:400;color:#aaaaaa;text-decoration:none;white-space:nowrap;transition:color 0.2s;"
            onmouseover="this.style.color='#ffffff';"
@@ -84,8 +82,7 @@
             Rechercher
           </button>
         </form>
-      </div>
-
+    </div>
   </header>
 
   <script>
@@ -93,16 +90,16 @@
     var rootPath = '{{rootPath}}';
     var path = window.location.pathname;
 
-    // ── Avatar : affiche seulement l'initiale ──────────────────
+    // ── Avatar: displays only the initial ────────────────────────────────────────────────────────────
     var avatar = document.getElementById('user-avatar');
     if (avatar) {
       var initial = avatar.textContent.trim().charAt(0).toUpperCase();
       avatar.textContent = initial;
     }
 
-    // ── Bouton Accueil ──────────────────────────────────────────
-    // On compare le chemin courant à la racine (avec et sans slash final,
-    // avec et sans rootPath). Si on est sur la home, on masque le bouton.
+    // ── Home button ──────────────────────────────────────────────────────────────────────────────────
+    // We compare the current path to the root (with and without a trailing slash,
+    // (with and without rootPath). If the user is on the home screen, the button is hidden.
     var cleanPath = path.replace(/\/$/, '') || '/';
     var cleanRoot = (rootPath || '').replace(/\/$/, '');
     var isHome = (cleanPath === cleanRoot || cleanPath === '' || cleanPath === '/');
@@ -112,7 +109,7 @@
       nav.style.visibility = isHome ? 'hidden' : 'visible';
     }
 
-    // ── Popup recherche ──────────────────────────────────────
+    // ── Search Popup ─────────────────────────────────────────────────────────────────────────────────
     window.toggleSearch = function(e) {
       e.preventDefault();
       var popup = document.getElementById('search-popup');
@@ -122,7 +119,7 @@
       if (!visible) document.getElementById('header-search-input').focus();
     };
 
-    // Ferme la popup si on clique ailleurs
+    // Close the popup if you click elsewhere
     document.addEventListener('click', function(e) {
       var popup = document.getElementById('search-popup');
       var btn   = document.getElementById('btn-search');
@@ -131,16 +128,16 @@
       }
     });
 
-    // Submit : construit l'URL depuis la catégorie courante
+    // Submit: Builds the URL based on the current category
     var searchForm = document.getElementById('header-search-form');
     if (searchForm) {
       searchForm.addEventListener('submit', function(e) {
-        e.preventDefault();
+            e.preventDefault();
         var val = document.getElementById('header-search-input').value.trim();
-        if (!val) return;
+            if (!val) return;
 
-        // Ubooquity attend : POST vers ?search=simple avec searchstring=<terme>
-        // On crée un formulaire temporaire et on le soumet
+        // Ubooquity expects a POST request to ?search=simple with searchstring=<term>
+        // We create a temporary form and submit it
         var form = document.createElement('form');
         form.method = 'POST';
         form.action = '?search=simple';
@@ -153,8 +150,7 @@
         form.appendChild(input);
         document.body.appendChild(form);
         form.submit();
-      });
-    }
-
+          });
+        }
   })();
   </script>

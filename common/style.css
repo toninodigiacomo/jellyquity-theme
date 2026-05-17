@@ -137,7 +137,7 @@ button:hover, .button:hover, input[type="button"]:hover, input[type="submit"]:ho
 /* ── Main content wrapper ──────────────────────────────── */
 #content, #main, main, .content {
   padding: 28px 32px !important;
-  max-width: 1800px !important;
+  //max-width: 1800px !important;
 }
 
 /* ── Breadcrumb ────────────────────────────────────────── */
