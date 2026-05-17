@@ -7,7 +7,6 @@
 
 :root {
   --jf-bg:           #101010;
-  --jf-bg-header:    #4b4b4b;
   --jf-surface:      #1c1c1c;
   --jf-surface2:     #252525;
   --jf-surface3:     #2e2e2e;
@@ -138,6 +137,7 @@ button:hover, .button:hover, input[type="button"]:hover, input[type="submit"]:ho
 /* ── Main content wrapper ──────────────────────────────── */
 #content, #main, main, .content {
   padding: 28px 32px !important;
+  max-width: 1800px !important;
 }
 
 /* ── Breadcrumb ────────────────────────────────────────── */

@@ -1,10 +1,9 @@
 {{>common/inc-header.html}}
 
 <style>
-  /* Cache "Go to page" et "Find book" du topbar */
-  #topbarcenter, #topbarright {
-    display: none !important;
-  }
+  /* Cache les popups indésirables */
+  #pageselector, #searchbox, #settingsbox { display: none !important; }
+  #topbarcenter, #topbarright { display: none !important; }
 
   /* Grille centrée sur 6 colonnes */
   #booksContainer {
@@ -17,7 +16,6 @@
     width: fit-content !important;
   }
 
-  /* Cards */
   #booksContainer .book {
     width: 200px !important;
     cursor: pointer;
@@ -48,6 +46,218 @@
     text-overflow: ellipsis !important;
     width: 200px !important;
   }
+
+  /* Popup bookdetails */
+  #bookdetails {
+    position: fixed !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    width: min(760px, 95vw) !important;
+    max-height: 90vh !important;
+    overflow-y: auto !important;
+    background: #1c1c1c !important;
+    border: 1px solid rgba(255,255,255,0.08) !important;
+    border-radius: 14px !important;
+    box-shadow: 0 24px 64px rgba(0,0,0,0.7) !important;
+    z-index: 2000 !important;
+    padding: 28px 32px !important;
+    font-family: 'Noto Sans', sans-serif !important;
+    color: #ffffff !important;
+    /* NE PAS mettre display:none ici — togglePopup gère display:inline */
+  }
+
+  /* Dimoverlay */
+  #dimoverlay {
+    position: fixed !important;
+    inset: 0 !important;
+    background: rgba(0,0,0,0.75) !important;
+    z-index: 1999 !important;
+    visibility: hidden;
+  }
+
+  /* Styles du contenu du popup généré par Ubooquity */
+  #details {
+    display: flex !important;
+    gap: 24px !important;
+    align-items: flex-start !important;
+  }
+
+  #details_cover img {
+    width: 180px !important;
+    border-radius: 6px !important;
+    border: 3px solid #aaaaaa !important;
+    display: block !important;
+  }
+
+  #details_cover_progress {
+    flex-shrink: 0 !important;
+    width: 180px !important;
+  }
+
+  #details_right_col {
+    flex: 1 !important;
+    min-width: 0 !important;
+  }
+
+  #details_title {
+    font-size: 22px !important;
+    font-weight: 900 !important;
+    color: #ffffff !important;
+    margin-bottom: 6px !important;
+    line-height: 1.2 !important;
+  }
+
+  #details_authors {
+    font-size: 15px !important;
+    font-weight: 700 !important;
+    color: #4ca2d8 !important;
+    margin-bottom: 14px !important;
+  }
+
+  #details_series {
+    font-size: 14px !important;
+    color: #aaaaaa !important;
+    margin-bottom: 8px !important;
+  }
+
+  #details_tags {
+    font-size: 13px !important;
+    color: #aaaaaa !important;
+    font-style: italic !important;
+    margin-bottom: 8px !important;
+  }
+
+  #details_language {
+    font-size: 13px !important;
+    color: #aaaaaa !important;
+    margin-bottom: 8px !important;
+  }
+
+  #details_file {
+    font-size: 13px !important;
+    color: #888888 !important;
+    margin-bottom: 4px !important;
+  }
+
+  #details_publication {
+    font-size: 13px !important;
+    font-style: italic !important;
+    color: #888888 !important;
+    margin-bottom: 16px !important;
+  }
+
+  #details_button_row {
+    display: flex !important;
+    gap: 20px !important;
+    margin-top: 20px !important;
+    padding-top: 16px !important;
+    border-top: 1px solid rgba(255,255,255,0.07) !important;
+    align-items: center !important;
+  }
+
+  #details_description {
+    font-size: 13px !important;
+    color: #bbbbbb !important;
+    line-height: 1.75 !important;
+    margin-top: 20px !important;
+    padding-top: 16px !important;
+    border-top: 1px solid rgba(255,255,255,0.07) !important;
+  }
+
+  /* Boutons d'action */
+  #details_download {
+    display: inline-block !important;
+    width: 32px !important;
+    height: 32px !important;
+    background-image: url('{{rootPath}}/theme/common/icon-download.svg') !important;
+    background-size: contain !important;
+    background-repeat: no-repeat !important;
+    opacity: 0.5 !important;
+    transition: opacity 0.2s !important;
+  }
+  #details_download:hover { opacity: 1 !important; }
+
+  #details_read {
+    display: inline-block !important;
+    width: 32px !important;
+    height: 32px !important;
+    background-image: url('{{rootPath}}/theme/common/icon-read.svg') !important;
+    background-size: contain !important;
+    background-repeat: no-repeat !important;
+    opacity: 0.5 !important;
+    transition: opacity 0.2s !important;
+  }
+  #details_read:hover { opacity: 1 !important; }
+
+  #details_mark_unread {
+    display: inline-block !important;
+    width: 32px !important;
+    height: 32px !important;
+    background-image: url('{{rootPath}}/theme/common/icon-unread.svg') !important;
+    background-size: contain !important;
+    background-repeat: no-repeat !important;
+    opacity: 0.5 !important;
+    transition: opacity 0.2s !important;
+  }
+  #details_mark_unread:hover { opacity: 1 !important; }
+
+  #details_mark_finished {
+    display: inline-block !important;
+    width: 32px !important;
+    height: 32px !important;
+    background-image: url('{{rootPath}}/theme/common/icon-finished.svg') !important;
+    background-size: contain !important;
+    background-repeat: no-repeat !important;
+    opacity: 0.5 !important;
+    transition: opacity 0.2s !important;
+  }
+  #details_mark_finished:hover { opacity: 1 !important; }
+
+  /* Barre de progression */
+  .details_progress_bar {
+    height: 3px !important;
+    background: #2e2e2e !important;
+    border-radius: 2px !important;
+    margin-top: 8px !important;
+    overflow: hidden !important;
+  }
+  .details_progress_bar_fill {
+    display: block !important;
+    height: 100% !important;
+    width: var(--value) !important;
+    background: #4ca2d8 !important;
+    border-radius: 2px !important;
+  }
+
+
+  /* Bouton fermer */
+  #details_close {
+    position: absolute !important;
+    top: 14px !important;
+    right: 14px !important;
+    width: 32px !important;
+    height: 32px !important;
+    background: #252525 !important;
+    border: 1px solid rgba(255,255,255,0.1) !important;
+    border-radius: 50% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    color: #aaa !important;
+    font-size: 18px !important;
+    text-decoration: none !important;
+    transition: all 0.2s !important;
+    z-index: 10 !important;
+  }
+  #details_close::after { content: '×' !important; }
+  #details_close:hover {
+    background: #4ca2d8 !important;
+    color: #fff !important;
+  }
+
+  /* Rating */
+  .details_rating { display: none !important; }
 </style>
 
 <main id="content">
@@ -61,58 +271,45 @@
 
   <div id="booksContainer">
     {{#items}}
-    <div class="book {{readingStatusClass}}"
-         style="cursor:pointer;"
-         data-id="{{itemId}}"
-         data-title="{{itemTitle}}"
-         data-cover="{{itemCoverUrl}}"
-         data-series="{{seriesName}}"
-         data-series-index="{{seriesIndex}}"
-         data-writers="{{writers}}"
-         data-date="{{publicationDate}}"
-         data-language="{{language}}"
-         data-ext="{{fileExtension}}"
-         data-size="{{fileSize}}"
-         data-rating="{{rating}}"
-         data-tags="{{tags}}"
-         data-reader="{{readerUrl}}"
-         data-download="{{downloadUrl}}"
-         data-progress="{{progress}}"
-         data-folder="{{isFolder}}"
-         data-folder-url="{{itemFolderUrl}}"
-         data-rootpath="{{rootPath}}"
-         data-seriesindex="{{seriesIndex}}"
-         onclick="handleCardClick(this)">
-
+    {{^isFolder}}
+    <div class="book {{readingStatusClass}}" style="cursor:pointer;">
+      <div style="position:relative;">
+        <a href="#" onclick="togglePopup('bookdetails');loadBookDetails({{itemId}},'{{rootPath}}');return false;"
+           style="display:block;text-decoration:none;">
+          <img
+            src="{{itemCoverUrl}}"
+            alt="{{itemTitle}}"
+            loading="lazy"
+            onerror="this.style.display='none';"
+          />
+          {{#progress}}
+          <div style="position:absolute;bottom:0;left:0;right:0;height:3px;background:rgba(0,0,0,0.5);">
+            <div style="width:{{progress}}%;height:100%;background:#4ca2d8;"></div>
+          </div>
+          {{/progress}}
+        </a>
+      </div>
+      <div class="title" title="{{itemTitle}}">{{itemTitle}}</div>
+    </div>
+    {{/isFolder}}
+    {{#isFolder}}
+    <div class="book" style="cursor:pointer;" onclick="window.location='{{itemFolderUrl}}';">
       <div style="position:relative;">
         <img
           src="{{itemCoverUrl}}"
           alt="{{itemTitle}}"
           loading="lazy"
-          onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"
+          onerror="this.style.display='none';"
         />
-        <div style="display:none;width:100%;aspect-ratio:2/3;background:#1c1c1c;align-items:center;justify-content:center;flex-direction:column;gap:8px;color:#555;font-size:12px;font-weight:700;text-align:center;padding:16px;">
-          <span style="font-size:32px;">{{#isFolder}}📁{{/isFolder}}{{^isFolder}}📚{{/isFolder}}</span>
-          <span>{{itemTitle}}</span>
-        </div>
-
-        {{#progress}}
-        <div style="position:absolute;bottom:0;left:0;right:0;height:3px;background:rgba(0,0,0,0.5);">
-          <div style="width:{{progress}}%;height:100%;background:#00a4dc;"></div>
-        </div>
-        {{/progress}}
-
-        {{#isFolder}}
         {{#itemChildrenCount}}
-        <div style="position:absolute;bottom:6px;right:6px;background:rgba(0,0,0,0.7);color:#00a4dc;font-size:14px;font-weight:900;padding:2px 6px;border-radius:4px;">
+        <div style="position:absolute;bottom:6px;right:6px;background:rgba(0,0,0,0.7);color:#4ca2d8;font-size:14px;font-weight:900;padding:2px 6px;border-radius:4px;">
           {{itemChildrenCount}}
         </div>
         {{/itemChildrenCount}}
-        {{/isFolder}}
       </div>
-
       <div class="title" title="{{itemTitle}}">{{itemTitle}}</div>
     </div>
+    {{/isFolder}}
     {{/items}}
   </div>
 
@@ -126,113 +323,50 @@
   <div id="pagination" style="display:flex;align-items:center;gap:6px;justify-content:center;margin-top:40px;padding:20px 0;">
     <a href="{{prev10pageUrl}}" class="{{prev10pageClass}}" style="padding:6px 12px;background:#1c1c1c;border:1px solid rgba(255,255,255,0.07);border-radius:6px;color:#aaa;font-weight:700;font-size:13px;">«</a>
     <a href="{{prevPageUrl}}" class="{{prevPageClass}}" style="padding:6px 12px;background:#1c1c1c;border:1px solid rgba(255,255,255,0.07);border-radius:6px;color:#aaa;font-weight:700;font-size:13px;">‹</a>
-    <span style="padding:6px 14px;background:#00a4dc;border-radius:6px;color:#fff;font-weight:700;font-size:13px;">{{pageNumber}} / {{totalPages}}</span>
+    <span style="padding:6px 14px;background:#4ca2d8;border-radius:6px;color:#fff;font-weight:700;font-size:13px;">{{pageNumber}} / {{totalPages}}</span>
     <a href="{{nextPageUrl}}" class="{{nextPageClass}}" style="padding:6px 12px;background:#1c1c1c;border:1px solid rgba(255,255,255,0.07);border-radius:6px;color:#aaa;font-weight:700;font-size:13px;">›</a>
     <a href="{{next10pageUrl}}" class="{{next10pageClass}}" style="padding:6px 12px;background:#1c1c1c;border:1px solid rgba(255,255,255,0.07);border-radius:6px;color:#aaa;font-weight:700;font-size:13px;">»</a>
   </div>
 
 </main>
 
-{{>library/page-library-details.html}}
+{{>library/inc-library-popups.html}}
 
 <script>
-function handleCardClick(card) {
-  if (card.dataset.folder === 'true') {
-    window.location = card.dataset.folderUrl;
-    return;
-  }
-  openDetails(card.dataset);
-}
+// Cache bookdetails au chargement
+document.addEventListener('DOMContentLoaded', function() {
+  var el = document.getElementById('bookdetails');
+  if (el) el.style.display = 'none';
+});
 
-function openDetails(d) {
-  // Cover
-  var cover = document.getElementById('detailsCover');
-  var fallback = document.getElementById('detailsCoverFallback');
-  cover.src = d.cover || '';
-  cover.style.display = 'block';
-  if (fallback) fallback.style.display = 'none';
-
-  // Title
-  document.getElementById('detailsTitle').textContent = d.title || '';
-
-  // Series
-  var seriesEl = document.getElementById('detailsSeries');
-  if (d.series) {
-    seriesEl.textContent = d.series + (d.seriesIndex ? ' #' + d.seriesIndex : '');
-    seriesEl.style.display = 'block';
-  } else {
-    seriesEl.style.display = 'none';
-  }
-
-  // Meta badges
-  var metaEl = document.getElementById('detailsMeta');
-  metaEl.innerHTML = '';
-  var metas = [
-    d.writers   ? { icon: '✍', val: d.writers }   : null,
-    d.date      ? { icon: '📅', val: d.date }      : null,
-    d.language  ? { icon: '🌐', val: d.language }  : null,
-    d.ext       ? { icon: '',   val: d.ext }        : null,
-    d.size      ? { icon: '',   val: d.size }       : null,
-    d.rating    ? { icon: '',   val: d.rating }     : null,
-  ];
-  metas.forEach(function(m) {
-    if (!m) return;
-    var span = document.createElement('span');
-    span.style.cssText = 'background:rgba(0,164,220,0.12);border:1px solid rgba(0,164,220,0.25);border-radius:20px;color:#00a4dc;font-size:12px;font-weight:700;padding:3px 10px;';
-    span.textContent = (m.icon ? m.icon + ' ' : '') + m.val;
-    metaEl.appendChild(span);
-  });
-
-  // Tags
-  var tagsEl = document.getElementById('detailsTags');
-  if (d.tags) {
-    tagsEl.textContent = '🏷 ' + d.tags;
-    tagsEl.style.display = 'block';
-  } else {
-    tagsEl.style.display = 'none';
-  }
-
-  // Buttons
-  var actionsEl = document.getElementById('detailsActions');
-  actionsEl.innerHTML = '';
-  if (d.reader) {
-    var btnRead = document.createElement('a');
-    btnRead.href = d.reader;
-    btnRead.textContent = '▶ Lire';
-    btnRead.style.cssText = 'display:inline-flex;align-items:center;padding:10px 22px;border-radius:6px;background:#00a4dc;color:#fff;font-family:Nunito,sans-serif;font-size:15px;font-weight:700;text-decoration:none;transition:all 0.2s;';
-    actionsEl.appendChild(btnRead);
-  }
-  if (d.download) {
-    var btnDl = document.createElement('a');
-    btnDl.href = d.download;
-    btnDl.textContent = '↓ Télécharger';
-    btnDl.style.cssText = 'display:inline-flex;align-items:center;padding:10px 22px;border-radius:6px;background:transparent;color:#aaa;font-family:Nunito,sans-serif;font-size:15px;font-weight:700;text-decoration:none;border:1px solid rgba(255,255,255,0.12);transition:all 0.2s;';
-    actionsEl.appendChild(btnDl);
-  }
-
-  // Progress
-  var progressSection = document.getElementById('detailsProgressSection');
-  if (d.progress && d.progress !== '0') {
-    document.getElementById('detailsProgressValue').textContent = d.progress + '%';
-    document.getElementById('detailsProgressBar').style.width = d.progress + '%';
-    progressSection.style.display = 'block';
-  } else {
-    progressSection.style.display = 'none';
-  }
-
-  // Description (non disponible dans la liste, sera vide)
-  var descEl = document.getElementById('detailsDesc');
-  descEl.style.display = 'none';
-
-  // Show overlay
-  var overlay = document.getElementById('detailsOverlay');
-  overlay.style.display = 'flex';
-  document.body.style.overflow = 'hidden';
-}
+// Intercepte loadBookDetails pour repositionner après le chargement AJAX
+var origLoadBookDetails = loadBookDetails;
+loadBookDetails = function(itemId, rootPath) {
+  origLoadBookDetails(itemId, rootPath);
+  // Surveille le contenu jusqu'à ce qu'il soit chargé
+  var attempts = 0;
+  var interval = setInterval(function() {
+    var el = document.getElementById('bookdetails');
+    attempts++;
+    if (attempts > 20) { clearInterval(interval); return; }
+    if (el && el.innerHTML.length > 100) {
+      clearInterval(interval);
+      var w = Math.min(760, window.innerWidth * 0.95);
+      var h = Math.min(el.scrollHeight, window.innerHeight * 0.9);
+      el.style.position = 'fixed';
+      el.style.width = w + 'px';
+      el.style.maxHeight = (window.innerHeight * 0.9) + 'px';
+      el.style.overflowY = 'auto';
+      el.style.left = Math.round((window.innerWidth - w) / 2) + 'px';
+      el.style.top = Math.round((window.innerHeight - Math.min(el.scrollHeight, window.innerHeight * 0.9)) / 2) + 'px';
+      el.style.transform = 'none';
+      el.style.margin = '0';
+    }
+  }, 100);
+};
 </script>
 
-<footer id="footer">
-  <p>Propulsé par <a href="https://vaemendis.net/ubooquity/">Ubooquity</a> · Thème Jellyfin</p>
-</footer>
+{{>common/inc-footer.html}}
+
 </body>
 </html>

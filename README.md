@@ -83,3 +83,4 @@ Toutes les couleurs sont des variables CSS dans `common/style.css` :
 
 
 > **Important** : Il faut que dans les parèmètres d'administration d'ubooquity que **Enable folder metadata display** soit activé !
+> **Important** : Il faut que dans les parèmètres **Display title from metadata instead of file name** soit activé pour avopoir les titres qui se trouvent dans les metadatas !

@@ -1,0 +1,51 @@
+<div id="dimoverlay"></div>
+<div class="popupmenu" id="pageselector">
+    <div class="popuptitle">Go to page</div>
+    {{pageSelectorLinks}}
+</div>
+<div class="popupmenu" id="searchbox">
+    <div class="popuptitle">Find book</div>
+    <form id="searchform" method="POST" action="?search=simple">
+        <input class="textbox" type="text" name="searchstring"/>
+        <input class="actionbutton" type="submit" value="Search"/>
+    </form>
+    <br/>
+</div>
+<div class="popupmenu" id="bookdetails"></div>
+<div class="popupmenu" id="settingsbox">
+    <div class="popuptitle"><span class="categorytitle">{{category}}</span> display settings</div>
+    <form id="settingsform" method="POST" action="{{rootPath}}/{{category}}?settings=true">
+        <div class="sectiontitle">Grouping</div>
+        <!-- ⚠ values must be consistent with grouping enum -->
+        <label class="radiolabel">
+            <input type="radio" name="grouping" value="FOLDER" {{checkedGroupByFolder}}/>Folder</label>
+        <label class="radiolabel">
+            <input type="radio" name="grouping" value="FLAT" {{checkedNoGrouping}}/>Flat</label>
+        <br/>
+        <div class="sectiontitle">Sorting criterion</div>
+        <!-- ⚠ values must be consistent with field enum -->
+        <label class="radiolabel">
+            <input type="radio" name="sortingCriterion" value="FILE_PATH" {{checkedSortByFilePath}}/>File path</label>
+        <label class="radiolabel">
+            <input type="radio" name="sortingCriterion" value="FILE_NAME" {{checkedSortByFileName}}/>File name</label>
+        <br/>
+        <label class="radiolabel">
+            <input type="radio" name="sortingCriterion" value="WRITERS" {{checkedSortByWriters}}/>Authors</label>
+        <label class="radiolabel">
+            <input type="radio" name="sortingCriterion" value="TITLE" {{checkedSortByTitle}}/>Title</label>
+        <br/>
+        <label class="radiolabel">
+            <input type="radio" name="sortingCriterion" value="DATE_UPDATED" {{checkedSortByDate}}/>Date added</label>
+        <br/>
+        <div class="sectiontitle">Sorting order</div>
+        <!-- ⚠ values must be consistent with sorting order enum -->
+        <label class="radiolabel">
+            <input type="radio" name="sortingOrder" value="ASC" {{checkedSortAsc}}/>Ascending</label>
+        <label class="radiolabel">
+            <input type="radio" name="sortingOrder" value="DESC" {{checkedSortDesc}}/>Descending</label>
+        <br/>
+        <br/>
+        <input class="actionbutton" type="submit" value="Apply"/>
+    </form>
+    <br/>
+</div>
