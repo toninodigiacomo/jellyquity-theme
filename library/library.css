@@ -361,7 +361,7 @@
   width: 100% !important;
 }
 
-/* Labels radio style boutons */
+/* ── Labels radio style boutons ──────────────────────────────────────────────────────────────────── */
 .radiolabel {
   display: inline-flex !important;
   align-items: center !important;
@@ -391,17 +391,17 @@
   flex-shrink: 0 !important;
 }
 
-/* Conteneur des boutons radio centré */
+/* ── Centered radio button container ─────────────────────────────────────────────────────────────── */
 #settingsform > br { display: none !important; }
 #settingsform {
   display: flex !important;
-  flex-direction: row !important;      /* horizontal au lieu de colonne */
+  flex-direction: row !important;
   flex-wrap: wrap !important;
   justify-content: center !important;
   gap: 0 !important;
 }
 
-/* Bouton Apply */
+/* ── Bouton Apply ────────────────────────────────────────────────────────────────────────────────── */
 #settingsform input[type="submit"],
 #settingsform .actionbutton {
   background: #4ca2d8 !important;
