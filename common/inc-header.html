@@ -32,20 +32,20 @@
 
     <!-- Up + Home buttons + Search — Current ID for the JS -->
     <nav id="navigation-buttons" style="display:flex;align-items:right;justify-content:right;flex:0;">
-      <a href="{{rootPath}}/" title="Accueil"
-         id="btn-home"
-         style="display:inline-flex;align-items:right;padding:7px;border-radius:8px;transition:opacity 0.2s;opacity:0.55;"
-         onmouseover="this.style.opacity='1';"
-         onmouseout="this.style.opacity='0.55';">
-        <img src="{{rootPath}}/theme/common/icon-home.svg" alt="Accueil"
-            style="width:24px;height:24px;display:block;"/>
-      </a>
       <a href="#" title="Recherche" onclick="toggleSearch(event)"
          id="btn-search"
          style="display:inline-flex;align-items:right;padding:7px;border-radius:8px;transition:opacity 0.2s;opacity:0.55;"
          onmouseover="this.style.opacity='1';"
          onmouseout="this.style.opacity='0.55';">
          <img src="{{rootPath}}/theme/common/icon-search.svg" alt="Recherche"
+            style="width:24px;height:24px;display:block;"/>
+      </a>
+      <a href="{{rootPath}}/" title="Accueil"
+         id="btn-home"
+         style="display:inline-flex;align-items:right;padding:7px;border-radius:8px;transition:opacity 0.2s;opacity:0.55;"
+         onmouseover="this.style.opacity='1';"
+         onmouseout="this.style.opacity='0.55';">
+        <img src="{{rootPath}}/theme/common/icon-home.svg" alt="Accueil"
             style="width:24px;height:24px;display:block;"/>
       </a>
     </nav>
@@ -89,72 +89,72 @@
         </form>
     </div>
 
-<script>
-  (function () {
-    var rootPath = '{{rootPath}}';
-    var path = window.location.pathname;
+    <script>
+      (function () {
+        var rootPath = '{{rootPath}}';
+        var path = window.location.pathname;
 
-    // ── Avatar: displays only the initial ────────────────────────────────────────────────────────────
-    var avatar = document.getElementById('user-avatar');
-    if (avatar) {
-      var initial = avatar.textContent.trim().charAt(0).toUpperCase();
-      avatar.textContent = initial;
-    }
-
-    // ── Home button ──────────────────────────────────────────────────────────────────────────────────
-    // We compare the current path to the root (with and without a trailing slash,
-    // (with and without rootPath). If the user is on the home screen, the button is hidden.
-    var cleanPath = path.replace(/\/$/, '') || '/';
-    var cleanRoot = (rootPath || '').replace(/\/$/, '');
-    var isHome = (cleanPath === cleanRoot || cleanPath === '' || cleanPath === '/');
-
-    var nav = document.getElementById('navigation-buttons');
-    if (nav) {
-      nav.style.visibility = isHome ? 'hidden' : 'visible';
-    }
-
-    // ── Search Popup ─────────────────────────────────────────────────────────────────────────────────
-    window.toggleSearch = function(e) {
-      e.preventDefault();
-      var popup = document.getElementById('search-popup');
-      if (!popup) return;
-      var visible = popup.style.display !== 'none';
-      popup.style.display = visible ? 'none' : 'block';
-      if (!visible) document.getElementById('header-search-input').focus();
-    };
-
-    // Close the popup if you click elsewhere
-    document.addEventListener('click', function(e) {
-      var popup = document.getElementById('search-popup');
-      var btn   = document.getElementById('btn-search');
-      if (popup && btn && !popup.contains(e.target) && !btn.contains(e.target)) {
-        popup.style.display = 'none';
-      }
-    });
-
-    // Submit: Builds the URL based on the current category
-    var searchForm = document.getElementById('header-search-form');
-    if (searchForm) {
-      searchForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-        var val = document.getElementById('header-search-input').value.trim();
-            if (!val) return;
-
-        // Ubooquity expects a POST request to ?search=simple with searchstring=<term>
-        // We create a temporary form and submit it
-        var form = document.createElement('form');
-        form.method = 'POST';
-        form.action = '?search=simple';
-
-        var input = document.createElement('input');
-        input.type = 'hidden';
-        input.name = 'searchstring';
-        input.value = val;
-
-        form.appendChild(input);
-        document.body.appendChild(form);
-        form.submit();
-          });
+        // ── Avatar: displays only the initial ────────────────────────────────────────────────────────────
+        var avatar = document.getElementById('user-avatar');
+        if (avatar) {
+          var initial = avatar.textContent.trim().charAt(0).toUpperCase();
+          avatar.textContent = initial;
         }
-  })();
-</script>
+
+        // ── Home button ──────────────────────────────────────────────────────────────────────────────────
+        // We compare the current path to the root (with and without a trailing slash,
+        // (with and without rootPath). If the user is on the home screen, the button is hidden.
+        var cleanPath = path.replace(/\/$/, '') || '/';
+        var cleanRoot = (rootPath || '').replace(/\/$/, '');
+        var isHome = (cleanPath === cleanRoot || cleanPath === '' || cleanPath === '/');
+
+        var nav = document.getElementById('navigation-buttons');
+        if (nav) {
+          nav.style.visibility = isHome ? 'hidden' : 'visible';
+        }
+
+        // ── Search Popup ─────────────────────────────────────────────────────────────────────────────────
+        window.toggleSearch = function(e) {
+          e.preventDefault();
+          var popup = document.getElementById('search-popup');
+          if (!popup) return;
+          var visible = popup.style.display !== 'none';
+          popup.style.display = visible ? 'none' : 'block';
+          if (!visible) document.getElementById('header-search-input').focus();
+        };
+
+        // Close the popup if you click elsewhere
+        document.addEventListener('click', function(e) {
+          var popup = document.getElementById('search-popup');
+          var btn   = document.getElementById('btn-search');
+          if (popup && btn && !popup.contains(e.target) && !btn.contains(e.target)) {
+            popup.style.display = 'none';
+          }
+        });
+
+        // Submit: Builds the URL based on the current category
+        var searchForm = document.getElementById('header-search-form');
+        if (searchForm) {
+          searchForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+            var val = document.getElementById('header-search-input').value.trim();
+                if (!val) return;
+
+            // Ubooquity expects a POST request to ?search=simple with searchstring=<term>
+            // We create a temporary form and submit it
+            var form = document.createElement('form');
+            form.method = 'POST';
+            form.action = '?search=simple';
+
+            var input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = 'searchstring';
+            input.value = val;
+
+            form.appendChild(input);
+            document.body.appendChild(form);
+            form.submit();
+              });
+            }
+      })();
+    </script>

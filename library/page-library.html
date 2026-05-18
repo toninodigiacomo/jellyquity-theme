@@ -1,161 +1,161 @@
-    {{>common/inc-header.html}}
+      {{>common/inc-header.html}}
 
-    {{>library/inc-library-topbar.html}}
+      {{>library/inc-library-topbar.html}}
 
-  </header>
+    </header>
 
-<link rel="stylesheet" type="text/css" href="{{rootPath}}/theme/library/library.css"/>
+    <link rel="stylesheet" type="text/css" href="{{rootPath}}/theme/library/library.css"/>
 
-<style>
-  /* ── Hide unwanted pop-ups ─────────────────────────────────────────────────────────────────────── */
-  /*#pageselector, #searchbox, #settingsbox { display: none !important; }
-  #topbarcenter, #topbarright { display: none !important; }*/
+    <style>
+      /* ── Hide unwanted pop-ups ─────────────────────────────────────────────────────────────────────── */
+      /*#pageselector, #searchbox, #settingsbox { display: none !important; }
+      #topbarcenter, #topbarright { display: none !important; }*/
 
-  /* Images of the action buttons (requires a resolved rootPath) */
-  #details_download    { background-image: url('/theme/common/icon-download.svg'); }
-  #details_read        { background-image: url('/theme/common/icon-read.svg'); }
-  #details_mark_unread { background-image: url('/theme/common/icon-unread.svg'); }
-  #details_mark_finished { background-image: url('/theme/common/icon-finished.svg'); }
+      /* Images of the action buttons (requires a resolved rootPath) */
+      #details_download    { background-image: url('/theme/common/icon-download.svg'); }
+      #details_read        { background-image: url('/theme/common/icon-read.svg'); }
+      #details_mark_unread { background-image: url('/theme/common/icon-unread.svg'); }
+      #details_mark_finished { background-image: url('/theme/common/icon-finished.svg'); }
 
-  /* ── 6-column centered grid ────────────────────────────────────────────────────────────────────── */
-  #booksContainer {
-    display: grid !important;
-    grid-template-columns: repeat(6, 200px) !important;
-    gap: 16px !important;
-    justify-content: center !important;
-    margin: 0 auto !important;
-    padding: 24px 0 !important;
-    width: fit-content !important;
-  }
-
-  #booksContainer .book {
-    width: 200px !important;
-    cursor: pointer;
-  }
-
-  #booksContainer .book img {
-    width: 200px !important;
-    height: 288px !important;
-    object-fit: cover !important;
-    border-radius: 5px !important;
-    border: 3px solid #aaaaaa !important;
-    display: block !important;
-    transition: border-color 0.2s !important;
-    box-shadow: none !important;
-  }
-  
-  #booksContainer .book:hover img {
-    border-color: #4ca2d8 !important;
-  }
-
-  #booksContainer .book .title {
-    font-family: 'Noto Sans', sans-serif !important;
-    font-size: 12px !important;
-    font-weight: 700 !important;
-    color: #ffffff !important;
-    text-align: center !important;
-    margin-top: 6px !important;
-    white-space: nowrap !important;
-    overflow: hidden !important;
-    text-overflow: ellipsis !important;
-    width: 200px !important;
-  }
-</style>
-
-<main id="content">
-
-  {{#pageLabel}}
-  <h1 id="pageTitle">{{pageLabel}}</h1>
-  {{/pageLabel}}
-  {{^pageLabel}}
-  <h1 id="pageTitle">{{category}}</h1>
-  {{/pageLabel}}
-
-  <div id="booksContainer">
-    {{#items}}
-    {{^isFolder}}
-    <div class="book {{readingStatusClass}}" style="cursor:pointer;">
-      <div style="position:relative;">
-        <a href="#" onclick="togglePopup('bookdetails');loadBookDetails({{itemId}},'{{rootPath}}');return false;"
-           style="display:block;text-decoration:none;">
-          <img
-            src="{{itemCoverUrl}}"
-            alt="{{itemTitle}}"
-            loading="lazy"
-            onerror="this.style.display='none';"
-          />
-          {{#progress}}
-          <div style="position:absolute;bottom:0;left:0;right:0;height:3px;background:rgba(0,0,0,0.5);">
-            <div style="width:{{progress}}%;height:100%;background:#4ca2d8;"></div>
-          </div>
-          {{/progress}}
-        </a>
-      </div>
-      <div class="title" title="{{itemTitle}}">{{itemTitle}}</div>
-    </div>
-    {{/isFolder}}
-    {{#isFolder}}
-    <div class="book" style="cursor:pointer;" onclick="window.location='{{itemFolderUrl}}';">
-      <div style="position:relative;">
-        <img
-          src="{{itemCoverUrl}}"
-          alt="{{itemTitle}}"
-          loading="lazy"
-          onerror="this.style.display='none';"
-        />
-        {{#itemChildrenCount}}
-        <div style="position:absolute;bottom:6px;right:6px;background:rgba(0,0,0,0.7);color:#4ca2d8;font-size:14px;font-weight:900;padding:2px 6px;border-radius:4px;">
-          {{itemChildrenCount}}
-        </div>
-        {{/itemChildrenCount}}
-      </div>
-      <div class="title" title="{{itemTitle}}">{{itemTitle}}</div>
-    </div>
-    {{/isFolder}}
-    {{/items}}
-  </div>
-
-  {{^items}}
-  <div style="text-align:center;padding:80px 20px;color:#555;">
-    <div style="font-size:48px;margin-bottom:16px;">📭</div>
-    <p style="font-size:18px;font-weight:700;color:#666;">Aucun élément trouvé</p>
-  </div>
-  {{/items}}
-
-  <div id="pagination" style="display:flex;align-items:center;gap:6px;justify-content:center;margin-top:40px;padding:20px 0;">
-    <a href="{{prev10pageUrl}}" class="page-nav {{prev10pageClass}}" style="padding:6px 12px;background:#1c1c1c;border:1px solid rgba(255,255,255,0.07);border-radius:6px;color:#aaa;font-weight:700;font-size:13px;">«</a>
-    <a href="{{prevPageUrl}}" class="page-nav {{prevPageClass}}" style="padding:6px 12px;background:#1c1c1c;border:1px solid rgba(255,255,255,0.07);border-radius:6px;color:#aaa;font-weight:700;font-size:13px;">‹</a>
-    <span id="page-indicator" style="padding:6px 14px;background:#4ca2d8;border-radius:6px;color:#fff;font-weight:700;font-size:13px;">{{pageNumber}} / {{totalPages}}</span>
-    <a href="{{nextPageUrl}}" class="page-nav {{nextPageClass}}" style="padding:6px 12px;background:#1c1c1c;border:1px solid rgba(255,255,255,0.07);border-radius:6px;color:#aaa;font-weight:700;font-size:13px;">›</a>
-    <a href="{{next10pageUrl}}" class="page-nav {{next10pageClass}}" style="padding:6px 12px;background:#1c1c1c;border:1px solid rgba(255,255,255,0.07);border-radius:6px;color:#aaa;font-weight:700;font-size:13px;">»</a>
-  </div>
-
-  <script>
-  // Masque la pagination si une seule page
-  (function() {
-    var indicator = document.getElementById('page-indicator');
-    if (indicator) {
-      var parts = indicator.textContent.trim().split('/');
-      var total = parseInt((parts[1] || '1').trim(), 10);
-      if (total <= 1) {
-        document.getElementById('pagination').style.display = 'none';
+      /* ── 6-column centered grid ────────────────────────────────────────────────────────────────────── */
+      #booksContainer {
+        display: grid !important;
+        grid-template-columns: repeat(6, 200px) !important;
+        gap: 16px !important;
+        justify-content: center !important;
+        margin: 0 auto !important;
+        padding: 24px 0 !important;
+        width: fit-content !important;
       }
-    }
-    // Désactive les liens "hidden" (classe Ubooquity pour liens inactifs)
-    document.querySelectorAll('.page-nav.hidden').forEach(function(el) {
-      el.addEventListener('click', function(e) { e.preventDefault(); });
-      el.style.opacity = '0.25';
-      el.style.cursor = 'default';
-      el.style.pointerEvents = 'none';
-    });
-  })();
-  </script>
 
-</main>
+      #booksContainer .book {
+        width: 200px !important;
+        cursor: pointer;
+      }
 
-{{>library/inc-library-popups.html}}
+      #booksContainer .book img {
+        width: 200px !important;
+        height: 288px !important;
+        object-fit: cover !important;
+        border-radius: 5px !important;
+        border: 3px solid #aaaaaa !important;
+        display: block !important;
+        transition: border-color 0.2s !important;
+        box-shadow: none !important;
+      }
+      
+      #booksContainer .book:hover img {
+        border-color: #4ca2d8 !important;
+      }
 
-{{>common/inc-footer.html}}
+      #booksContainer .book .title {
+        font-family: 'Noto Sans', sans-serif !important;
+        font-size: 12px !important;
+        font-weight: 700 !important;
+        color: #ffffff !important;
+        text-align: center !important;
+        margin-top: 6px !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+        width: 200px !important;
+      }
+    </style>
 
-</body>
+    <main id="content">
+
+      {{#pageLabel}}
+      <h1 id="pageTitle">{{pageLabel}}</h1>
+      {{/pageLabel}}
+      {{^pageLabel}}
+      <h1 id="pageTitle">{{category}}</h1>
+      {{/pageLabel}}
+
+      <div id="booksContainer">
+        {{#items}}
+        {{^isFolder}}
+        <div class="book {{readingStatusClass}}" style="cursor:pointer;">
+          <div style="position:relative;">
+            <a href="#" onclick="togglePopup('bookdetails');loadBookDetails({{itemId}},'{{rootPath}}');return false;"
+              style="display:block;text-decoration:none;">
+              <img
+                src="{{itemCoverUrl}}"
+                alt="{{itemTitle}}"
+                loading="lazy"
+                onerror="this.style.display='none';"
+              />
+              {{#progress}}
+              <div style="position:absolute;bottom:0;left:0;right:0;height:3px;background:rgba(0,0,0,0.5);">
+                <div style="width:{{progress}}%;height:100%;background:#4ca2d8;"></div>
+              </div>
+              {{/progress}}
+            </a>
+          </div>
+          <div class="title" title="{{itemTitle}}">{{itemTitle}}</div>
+        </div>
+        {{/isFolder}}
+        {{#isFolder}}
+        <div class="book" style="cursor:pointer;" onclick="window.location='{{itemFolderUrl}}';">
+          <div style="position:relative;">
+            <img
+              src="{{itemCoverUrl}}"
+              alt="{{itemTitle}}"
+              loading="lazy"
+              onerror="this.style.display='none';"
+            />
+            {{#itemChildrenCount}}
+            <div style="position:absolute;bottom:6px;right:6px;background:rgba(0,0,0,0.7);color:#4ca2d8;font-size:14px;font-weight:900;padding:2px 6px;border-radius:4px;">
+              {{itemChildrenCount}}
+            </div>
+            {{/itemChildrenCount}}
+          </div>
+          <div class="title" title="{{itemTitle}}">{{itemTitle}}</div>
+        </div>
+        {{/isFolder}}
+        {{/items}}
+      </div>
+
+      {{^items}}
+      <div style="text-align:center;padding:80px 20px;color:#555;">
+        <div style="font-size:48px;margin-bottom:16px;">📭</div>
+        <p style="font-size:18px;font-weight:700;color:#666;">Aucun élément trouvé</p>
+      </div>
+      {{/items}}
+
+      <div id="pagination" style="display:flex;align-items:center;gap:6px;justify-content:center;margin-top:40px;padding:20px 0;">
+        <a href="{{prev10pageUrl}}" class="page-nav {{prev10pageClass}}" style="padding:6px 12px;background:#1c1c1c;border:1px solid rgba(255,255,255,0.07);border-radius:6px;color:#aaa;font-weight:700;font-size:13px;">«</a>
+        <a href="{{prevPageUrl}}" class="page-nav {{prevPageClass}}" style="padding:6px 12px;background:#1c1c1c;border:1px solid rgba(255,255,255,0.07);border-radius:6px;color:#aaa;font-weight:700;font-size:13px;">‹</a>
+        <span id="page-indicator" style="padding:6px 14px;background:#4ca2d8;border-radius:6px;color:#fff;font-weight:700;font-size:13px;">{{pageNumber}} / {{totalPages}}</span>
+        <a href="{{nextPageUrl}}" class="page-nav {{nextPageClass}}" style="padding:6px 12px;background:#1c1c1c;border:1px solid rgba(255,255,255,0.07);border-radius:6px;color:#aaa;font-weight:700;font-size:13px;">›</a>
+        <a href="{{next10pageUrl}}" class="page-nav {{next10pageClass}}" style="padding:6px 12px;background:#1c1c1c;border:1px solid rgba(255,255,255,0.07);border-radius:6px;color:#aaa;font-weight:700;font-size:13px;">»</a>
+      </div>
+
+      <script>
+      // Masque la pagination si une seule page
+      (function() {
+        var indicator = document.getElementById('page-indicator');
+        if (indicator) {
+          var parts = indicator.textContent.trim().split('/');
+          var total = parseInt((parts[1] || '1').trim(), 10);
+          if (total <= 1) {
+            document.getElementById('pagination').style.display = 'none';
+          }
+        }
+        // Désactive les liens "hidden" (classe Ubooquity pour liens inactifs)
+        document.querySelectorAll('.page-nav.hidden').forEach(function(el) {
+          el.addEventListener('click', function(e) { e.preventDefault(); });
+          el.style.opacity = '0.25';
+          el.style.cursor = 'default';
+          el.style.pointerEvents = 'none';
+        });
+      })();
+      </script>
+
+    </main>
+
+    {{>library/inc-library-popups.html}}
+
+    {{>common/inc-footer.html}}
+
+  </body>
 </html>
