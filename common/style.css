@@ -22,9 +22,6 @@
   --jf-shadow:       0 4px 20px rgba(0,0,0,0.5);
   --jf-transition:   0.2s ease;
   --jf-font:         'Noto Sans', 'Segoe UI', sans-serif;
-}
-
-:root {
   --cover-width: {{coverWidth}}px;
   --cover-height: {{coverHeight}}px;
 }
