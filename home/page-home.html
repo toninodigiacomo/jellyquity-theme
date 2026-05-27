@@ -32,8 +32,8 @@
 
   .cat-card {
     position: relative;
-    width: 200px;
-    height: 288px;
+    width: var(--cover-width);
+    height: var(--cover-height);
     border-radius: 5px;
     overflow: hidden;
     border: 3px solid #aaaaaa;
@@ -119,8 +119,8 @@
 
   .recent-card {
     flex-shrink: 0;
-    width: 200px;
-    height: 288px;
+    width: var(--cover-width);
+    height: var(--cover-height);
     border-radius: 5px;
     border: 3px solid #aaaaaa;
     overflow: hidden;
@@ -130,6 +130,7 @@
     transition: border-color 0.2s;
     background: #1a1a1a;
   }
+    
   .recent-card:hover { border-color: #4ca2d8; }
 
   .recent-card img {
@@ -141,8 +142,8 @@
 
   .recent-card-skeleton {
     flex-shrink: 0;
-    width: 160px;
-    height: 230px;
+    width: var(--cover-width);
+    height: var(--cover-height);
     border-radius: 5px;
     border: 3px solid #2a2a2a;
     background: linear-gradient(90deg, #1a1a1a 25%, #252525 50%, #1a1a1a 75%);
@@ -209,10 +210,10 @@
       <div class="recent-card-skeleton"></div>
       <div class="recent-card-skeleton"></div>
       <div class="recent-card-skeleton"></div>
+      <!-- <div class="recent-card-skeleton"></div>
       <div class="recent-card-skeleton"></div>
       <div class="recent-card-skeleton"></div>
-      <div class="recent-card-skeleton"></div>
-      <div class="recent-card-skeleton"></div>
+      <div class="recent-card-skeleton"></div> -->
     </div>
   </div>
   <div class="home-separator"></div>
