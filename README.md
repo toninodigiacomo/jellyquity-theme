@@ -86,3 +86,8 @@ All colors are CSS variables in `common/style.css`:
 
 > **Important**: In the Ubooquity administration settings, **Enable folder metadata display** must be enabled!
 > **Important**: In the settings, **Display title from metadata instead of file name** must be enabled to display titles from the metadata!
+
+---
+
+## License
+**MIT** [LICENCE.md](https://github.com/toninodigiacomo/jellyquity-theme/blob/3958e0d22174ac0e426bb56ebe5fb73bf4e341b6/LICENCE.md)
