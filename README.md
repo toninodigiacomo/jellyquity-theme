@@ -89,5 +89,5 @@ All colors are CSS variables in `common/style.css`:
 
 ---
 
-## License
-**MIT** [LICENCE.md](https://github.com/toninodigiacomo/jellyquity-theme/blob/3958e0d22174ac0e426bb56ebe5fb73bf4e341b6/LICENCE.md)
+# License
+**GNU GPL v3.0** [LICENCE.md](https://github.com/toninodigiacomo/jellyquity-theme/blob/3958e0d22174ac0e426bb56ebe5fb73bf4e341b6/LICENCE.md)
